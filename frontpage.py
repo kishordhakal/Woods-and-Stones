@@ -8,6 +8,7 @@ from board import *
 #initialize the pygame
 pygame.init()
 
+
 #SETTING UP HEIGHT AND WIDTH
 WIDTH= 800
 HEIGHT= 800
@@ -117,14 +118,8 @@ smallfont = pygame.font.SysFont('Corbel', 35)
 
 
 
-
-
-
-
-
-
-
 #MAIN LOOP
+
 while True:
 
         #background image
@@ -142,7 +137,7 @@ while True:
             playerboard()
         if about.draw_button():
             print('About')
-            AboutPage()
+            aboutPage()
 
         if quit.draw_button():
             print('quit')
