@@ -58,7 +58,7 @@ class button():
     text_col = black
     width = 300
     height = 80
-
+    #init function to assign values to the object properties
     def __init__(self, x, y, text):
         self.x = x
         self.y = y
@@ -119,8 +119,9 @@ smallfont = pygame.font.SysFont('Corbel', 35)
 
 
 #MAIN LOOP
-
-while True:
+#function to avoid the circular import
+def main_menu():
+ while True:
 
         #background image
         screen.blit(background,(0,0))
@@ -150,3 +151,4 @@ while True:
         pygame.draw.rect(screen, ORANGE, (0, 0, 800, 80))
         font.render_to(screen, (40, 10), 'WOODS and STONES', (255, 255, 255, 250))
         pygame.display.update()
+main_menu()

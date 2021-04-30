@@ -114,7 +114,7 @@ def aboutPage():
                 if back_button.collidepoint(event.pos):
                     print("Back button was pressed")
                     import frontpage
-                    frontpage.frontPage()
+                    frontpage.main_menu()
 
 
 
