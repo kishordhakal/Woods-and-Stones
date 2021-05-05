@@ -84,7 +84,7 @@ def playerboard():
                 for i in range(0, 9):
                     if pygame.Rect.collidepoint(tileGrid[i], pygame.mouse.get_pos()):
                         # Modulus statement that flips between rock and stone picture placements
-                        if playerTurn % 2 == 0:
+                        if playerTurn % 2 == 0 and playerTurn < 6:
                             # get_surface() takes a copy image of the current board
                             # blit() draws it on a currently undisplayed frame
                             screen.blit(pygame.display.get_surface(), (0, 0))
@@ -94,7 +94,7 @@ def playerboard():
                             pygame.display.flip()
                             # Increment player turn by 1 post-click
                             playerTurn += 1
-                        else:
+                        elif playerTurn % 2 == 1 and playerTurn < 6:
                             # get_surface() takes a copy image of the current board
                             # blit() draws it on a currently undisplayed frame
                             screen.blit(pygame.display.get_surface(), (0, 0))
@@ -104,6 +104,8 @@ def playerboard():
                             pygame.display.flip()
                             # Increment player turn by 1 post-click
                             playerTurn += 1
+                        else:
+                            print("\nPlayer placement limit reached\nTime to shuffle the pieces\n")
 
         # gets the xy coordinates of the mouse
         mouse = pygame.mouse.get_pos()
