@@ -1,11 +1,53 @@
 import sys, pygame
 pygame.init()
 
-#title and icons
+# Tile class that drives wood/stone icon placement and tile detection
+class Tile:
+    # "image" is a pygame.Surface object given by pygame.image.load() when creating a Tile object
+    # "tileoccupied" is a pygame.Rect (detector rectangle) object given by pygame.Surface.get_rect()
+    # "x" and "y" are the coordinates for drawing detector rectangles
+    def __init__(self, image, x, y):
+        self.tilepicture = image
+        self.tileoccupied = None
+        self.xcoord = x
+        self.ycoord = y
+
+    # Method that places a detector rectangle after drawing a wood/stone icon, prevents overlapping icons
+    def drawiconrect(self):
+        # tilepicture.get_rect() gives a rectangle at x and y coordinates to "tileoccupied"
+        self.tileoccupied = self.tilepicture.get_rect(x = self.xcoord, y = self.ycoord)
+        # Actually place said detector rectangle on the game board using update() method and "tileoccupied"
+        pygame.display.update(self.tileoccupied)
+
+    # Method that removes the detector rectangle from "tileoccupied" and updates game board
+    def eraseiconrect(self):
+        self.tileoccupied = None
+        pygame.display.update(None)
+
+    # Method that returns "tilepicture" (a pygame.Rect object) for drawing on the game board
+    def getrectangle(self):
+        return self.tilepicture.get_rect(x = self.xcoord, y = self.ycoord)
+
+    # Method that returns "tilepicture" (a pygame.Surface object), which holds the image of a game board tile
+    def getimage(self):
+        return self.tilepicture
+
+    # Method that returns the x coordinate used to draw the "tileoccupied" rectangle
+    def getxcoord(self):
+        return self.xcoord
+
+    # Method that returns the y coordinate used to draw the "tileoccupied" rectangle
+    def getycoord(self):
+        return self.ycoord
+
+    # Method that returns "tileoccupied", which is either None or a pygame.Rect object
+    def isoccupied(self):
+        return self.tileoccupied
+
+# Title and window icons
 pygame.display.set_caption("Woods and Stones")
 icon = pygame.image.load('gameico.ico')
 pygame.display.set_icon(icon)
-
 
 # Set size of the user screen
 size = width, height = 800, 800
@@ -28,12 +70,16 @@ stoneRect = stone.get_rect()
 board = pygame.image.load("board.png")
 boardRect = board.get_rect()
 
-# Load checkerboard image for drawing in screen and make an array of rectangles for click detection
-# These detector rectangles are placed exactly where the board tiles are and can now be referenced through the array
-tile = pygame.image.load("tile.png")
-tileGrid = [tile.get_rect(x = 150, y = 150), tile.get_rect(x = 325, y = 150), tile.get_rect(x = 500, y = 150), # TOP ROW
-            tile.get_rect(x = 150, y = 325), tile.get_rect(x = 325, y = 325), tile.get_rect(x = 500, y = 325), # MIDDLE ROW
-            tile.get_rect(x = 150, y = 500), tile.get_rect(x = 325, y = 500), tile.get_rect(x = 500, y = 500)] # BOTTOM ROW
+# Load checkerboard image for drawing in screen and make an array of Tile objects
+# These Tile objects hold icons for the game board tiles and have methods for icon detection in the game loop
+tilepicture = pygame.image.load("tile.png")
+tileGrid = [Tile(tilepicture, 150, 150), Tile(tilepicture, 325, 150), Tile(tilepicture, 500, 150), # TOP ROW
+            Tile(tilepicture, 150, 325), Tile(tilepicture, 325, 325), Tile(tilepicture, 500, 325), # MIDDLE ROW
+            Tile(tilepicture, 150, 500), Tile(tilepicture, 325, 500), Tile(tilepicture, 500, 500)] # BOTTOM ROW
+
+# Create sound file objects for placing wood and stone icons
+stonesound = pygame.mixer.Sound("stonesound.mp3")
+woodsound = pygame.mixer.Sound("woodsound.mp3")
 
 #colors for retry and quit
 color = (255, 255, 255)
@@ -74,38 +120,59 @@ def playerboard():
                 # mouse click for retry button, but currently set to exit game until functionality
                 # is added later on
                 if width-700 <= mouse[0] <= width-580 and height-750 <= mouse[1] <= height-700:
+                    # For loop clears the board of all wood/stone detector rectangles, giving a clean board after reset
+                    for i in range(0, 9):
+                        tileGrid[i].eraseiconrect()
                     draw()
                     pygame.display.flip()
                     playerTurn = 0
             # Check for mouse button release
             if event.type == pygame.MOUSEBUTTONUP:
-                # For loop that goes through tileGrid array full of tile detector rectangles
-                # collidepoint() checks the x, y position of mouse click and checks which board tile was clicked
+                # For loop that goes through tileGrid array full of game board tile detector rectangles
                 for i in range(0, 9):
-                    if pygame.Rect.collidepoint(tileGrid[i], pygame.mouse.get_pos()):
-                        # Modulus statement that flips between rock and stone picture placements
-                        if playerTurn % 2 == 0 and playerTurn < 6:
-                            # get_surface() takes a copy image of the current board
-                            # blit() draws it on a currently undisplayed frame
-                            screen.blit(pygame.display.get_surface(), (0, 0))
-                            # Draw the stone picture over top of board copied above and centers image in a tile
-                            screen.blit(stone, (tileGrid[i].x + 37, tileGrid[i].y + 37))
-                            # Take undisplayed frame that's been drawn on and display it
-                            pygame.display.flip()
-                            # Increment player turn by 1 post-click
-                            playerTurn += 1
-                        elif playerTurn % 2 == 1 and playerTurn < 6:
-                            # get_surface() takes a copy image of the current board
-                            # blit() draws it on a currently undisplayed frame
-                            screen.blit(pygame.display.get_surface(), (0, 0))
-                            # Draw the wood picture over top of board copied above and centers image in a tile
-                            screen.blit(wood, (tileGrid[i].x + 37, tileGrid[i].y + 37))
-                            # Take undisplayed frame that's been drawn on and display it
-                            pygame.display.flip()
-                            # Increment player turn by 1 post-click
-                            playerTurn += 1
+                    # collidepoint() checks the x, y position of mouse click
+                    # getrectangle() gets a game board tile from the Tile object in tileGrid[i]
+                    # The position of these two are compared and checks which board tile was clicked
+                    if pygame.Rect.collidepoint(tileGrid[i].getrectangle(), pygame.mouse.get_pos()):
+                        # isoccupied() checks current game board tile for a wood/stone detector rectangle
+                        # If no detector (is None), tile has no wood/stone icon and can be clicked on
+                        # Otherwise, tile has an icon in it and can't be clicked on anymore
+                        if tileGrid[i].isoccupied() is None:
+                            # Modulus statement that flips between wood and stone picture placements
+                            if playerTurn % 2 == 0 and playerTurn < 6:
+                                # get_surface() takes a copy image of the current board
+                                # blit() draws it on a currently undisplayed frame
+                                screen.blit(pygame.display.get_surface(), (0, 0))
+                                # Draw the stone picture over top of board copied above and centers image in a tile
+                                screen.blit(stone, (tileGrid[i].getxcoord() + 37, tileGrid[i].getycoord() + 37))
+                                # Take undisplayed frame that's been drawn on and display it
+                                pygame.display.flip()
+                                # Play stone placement sound
+                                stonesound.play()
+                                # drawiconrect() fills the empty board tile with a wood/stone detector rectangle
+                                # So now it can no longer be clicked on
+                                tileGrid[i].drawiconrect()
+                                # Increment player turn by 1 post-click
+                                playerTurn += 1
+                            elif playerTurn % 2 == 1 and playerTurn < 6:
+                                # get_surface() takes a copy image of the current board
+                                # blit() draws it on a currently undisplayed frame
+                                screen.blit(pygame.display.get_surface(), (0, 0))
+                                # Draw the wood picture over top of board copied above and centers image in a tile
+                                screen.blit(wood, (tileGrid[i].getxcoord() + 37, tileGrid[i].getycoord() + 37))
+                                # Take undisplayed frame that's been drawn on and display it
+                                pygame.display.flip()
+                                # Play wood placement sound
+                                woodsound.play()
+                                # drawiconrect() fills the empty board tile with a wood/stone detector rectangle
+                                # So now it can no longer be clicked on
+                                tileGrid[i].drawiconrect()
+                                # Increment player turn by 1 post-click
+                                playerTurn += 1
+                            else:
+                                print("Player placement limit reached, time to move the pieces")
                         else:
-                            print("\nPlayer placement limit reached\nTime to shuffle the pieces\n")
+                            print("Tile is occupied, please press another tile")
 
         # gets the xy coordinates of the mouse
         mouse = pygame.mouse.get_pos()
@@ -116,6 +183,7 @@ def playerboard():
         else:
             # otherwise it always creates a darker shade for when the mouse is not over it
             pygame.draw.rect(screen, color_dark, [width - 200, height - 750, 120, 50])
+
         # creates the dark and light shades for the retry button
         if width - 700 <= mouse[0] <= width - 580 and height - 750 <= mouse[1] <= height - 700:
             pygame.draw.rect(screen, color_light, [width - 700, height - 750, 130, 55])
@@ -138,17 +206,18 @@ def draw():
     # Fill checkboard background with board tiles
     # Each tile is 150px by 150px with a 25px gap between them, so each new tile is placed 175px from the previous one
     # FIRST ROW
-    screen.blit(tile, (150, 150))
-    screen.blit(tile, (325, 150))
-    screen.blit(tile, (500, 150))
+    screen.blit(tilepicture, (150, 150))
+    screen.blit(tilepicture, (325, 150))
+    screen.blit(tilepicture, (500, 150))
     # SECOND ROW
-    screen.blit(tile, (150, 325))
-    screen.blit(tile, (325, 325))
-    screen.blit(tile, (500, 325))
+    screen.blit(tilepicture, (150, 325))
+    screen.blit(tilepicture, (325, 325))
+    screen.blit(tilepicture, (500, 325))
     # THIRD ROW
-    screen.blit(tile, (150, 500))
-    screen.blit(tile, (325, 500))
-    screen.blit(tile, (500, 500))
+    screen.blit(tilepicture, (150, 500))
+    screen.blit(tilepicture, (325, 500))
+    screen.blit(tilepicture, (500, 500))
+
 # Run playerboard method
 if __name__ == '__main__':
     playerboard()
