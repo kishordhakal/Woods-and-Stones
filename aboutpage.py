@@ -15,8 +15,14 @@ icon = pygame.image.load('gameico.ico')
 pygame.display.set_icon(icon)
 
 #background music
+pygame.mixer.music.set_volume(0.1) #setting up the volume
 mixer.music.load('bgsound.mp3')
 mixer.music.play(-1) #enabeling looping
+
+#COLORS
+WHITE=(255,255,255)
+BLACK=(0,0,0)
+color_light = (77, 219, 181)
 
 
 
@@ -34,6 +40,7 @@ def aboutPage():
 
     # font for text
     font1 = pygame.font.SysFont("comicsansms", 30)
+    font2=pygame.font.SysFont("corbel", 40)
 
     pygame.display.set_mode((w, h), 0, 32)
 
@@ -58,7 +65,7 @@ def aboutPage():
     text10 = font1.render("alternately until the winner is decided.", True, (255, 255, 255))
 
     # button
-    text_back_button = font1.render("Back", True, (255, 255, 255))
+    text_back_button = font2.render("Back", True, (255, 255, 255))
     back_button = pygame.Rect(10, 10, 100, 50)
 
     # background image
@@ -78,6 +85,13 @@ def aboutPage():
         pygame.draw.rect(screen, (0, 80, 0), Rect(15, 270, 770, 150))
 
         pygame.draw.rect(screen, (0, 80, 0), Rect(15, 440, 770, 150))
+
+
+        #BUTTON SHADES
+        pygame.draw.line(screen, WHITE, (10, 10), (110, 10), 3)  # top side
+        pygame.draw.line(screen, WHITE, (10, 10), (10, 60), 3)  # left
+        pygame.draw.line(screen, BLACK, (10, 60), (110, 60), 3)  # buttom
+        pygame.draw.line(screen, BLACK, (110, 10), (110, 60), 3)  # right
 
         # button
         pygame.draw.rect(screen, (0, 150, 0), back_button)
@@ -116,6 +130,17 @@ def aboutPage():
                     import frontpage
                     frontpage.main_menu()
 
+
+        #GET MOUSE POSITION
+        mouse = pygame.mouse.get_pos()
+        #CREATES HOVER OVER EFFECTS
+
+        if 10 <= mouse[0] <= 110 and 10 <= mouse[1] <= 60:
+            pygame.draw.rect(screen, color_light, [10, 10, 100, 50])
+
+
+
+        pygame.display.update()
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ import pygame.freetype
 from pygame.locals import*
 from aboutpage import *
 from board import *
+from multiplayer import *
 
 #initialize the pygame
 pygame.init()
@@ -46,6 +47,7 @@ pygame.display.set_icon(icon)
 background=pygame.image.load('bgpic.png')
 
 #background music
+pygame.mixer.music.set_volume(0.1) #setting up the volume
 mixer.music.load('bgsound.mp3')
 mixer.music.play(-1) #enabeling looping
 
@@ -127,7 +129,7 @@ def main_menu():
         screen.blit(background,(0,0))
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+         if event.type == pygame.QUIT:
                 sys.exit()
         if single.draw_button():
             print('Single Player')
@@ -135,7 +137,7 @@ def main_menu():
 
         if multi.draw_button():
             print('Multi Player')
-            playerboard()
+            multiplayer()
         if about.draw_button():
             print('About')
             aboutPage()

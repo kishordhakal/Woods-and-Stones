@@ -11,7 +11,7 @@ pygame.display.set_icon(icon)
 size = width, height = 800, 800
 
 # Set colors for the screen background
-background = 0, 0, 0
+background = (237, 196, 107)
 
 # Create screen object to place checkerboard into
 screen = pygame.display.set_mode(size)
@@ -38,15 +38,17 @@ tileGrid = [tile.get_rect(x = 150, y = 150), tile.get_rect(x = 325, y = 150), ti
 #colors for retry and quit
 color = (255, 255, 255)
 #colors for the different shades for the buttons
-color_light = (100, 100, 100)
+color_light = (77, 219, 181)
 color_dark = (0, 180, 0)
+BLACK=(0,0,0)
+WHITE=(255,255,255)
 #fonts and font size for retry and quit buttons
 quitFont = pygame.font.SysFont("corbel", 60)
 retryFont = pygame.font.SysFont("corbel", 55)
 #the words for the buttons
 quit = quitFont.render("Quit", True, color)
 reset = retryFont.render("Reset", True, color)
-hello=quitFont.render("hello", True, color)
+menu= quitFont.render("Menu", True, color)
 
 # Define method that creates player checkerboard and the screen it opens in
 def playerboard():
@@ -69,6 +71,9 @@ def playerboard():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 #checks the location of the mouse click
                 #mouse click for quit button then exits
+                if width- 450 <= mouse[0] <= width-280 and height - 750 <= mouse[1] <= height - 700:
+                    import frontpage
+                    frontpage.main_menu()
                 if width-200 <= mouse[0] <= width-80 and height-750 <= mouse[1] <= height-700:
                     sys.exit()
                 # mouse click for retry button, but currently set to exit game until functionality
@@ -84,7 +89,7 @@ def playerboard():
                 for i in range(0, 9):
                     if pygame.Rect.collidepoint(tileGrid[i], pygame.mouse.get_pos()):
                         # Modulus statement that flips between rock and stone picture placements
-                        if playerTurn % 2 == 0:
+                        if playerTurn % 2 == 0 and playerTurn < 6:
                             # get_surface() takes a copy image of the current board
                             # blit() draws it on a currently undisplayed frame
                             screen.blit(pygame.display.get_surface(), (0, 0))
@@ -94,7 +99,7 @@ def playerboard():
                             pygame.display.flip()
                             # Increment player turn by 1 post-click
                             playerTurn += 1
-                        else:
+                        elif playerTurn % 2 == 1 and playerTurn < 6:
                             # get_surface() takes a copy image of the current board
                             # blit() draws it on a currently undisplayed frame
                             screen.blit(pygame.display.get_surface(), (0, 0))
@@ -104,25 +109,52 @@ def playerboard():
                             pygame.display.flip()
                             # Increment player turn by 1 post-click
                             playerTurn += 1
+                        else:
+                            print("\nPlayer placement limit reached\nTime to shuffle the pieces\n")
 
         # gets the xy coordinates of the mouse
         mouse = pygame.mouse.get_pos()
         # creates the mouse hover over effect
         # if mouse is in these coordinates then creates the mouse over lighter shade
         if width - 200 <= mouse[0] <= width - 80 and height - 750 <= mouse[1] <= height - 700:
-            pygame.draw.rect(screen, color_light, [width - 200, height - 750, 120, 50])
+            pygame.draw.rect(screen, color_light, [width - 200, height - 750, 120, 55])
         else:
             # otherwise it always creates a darker shade for when the mouse is not over it
-            pygame.draw.rect(screen, color_dark, [width - 200, height - 750, 120, 50])
-        # creates the dark and light shades for the retry button
+            pygame.draw.rect(screen, color_dark, [width - 200, height - 750, 120, 55])
+        # creates the dark and light shades for the reset button
         if width - 700 <= mouse[0] <= width - 580 and height - 750 <= mouse[1] <= height - 700:
             pygame.draw.rect(screen, color_light, [width - 700, height - 750, 130, 55])
         else:
             pygame.draw.rect(screen, color_dark, [width - 700, height - 750, 130, 55])
+        #creates the Dark and Light shdes for the menu button
+        if width- 450 <= mouse[0] <= width-280 and height - 750 <= mouse[1] <= height - 700:
+            pygame.draw.rect(screen, color_light, [width- 450, height-750,140,55])
+        else:
+            pygame.draw.rect(screen, color_dark, [width - 450, height -750, 140, 55])
 
         # displays the text and updates the display
         screen.blit(reset, (width - 700, height - 750))
         screen.blit(quit, (width - 200, height - 750))
+        screen.blit(menu, (width - 450, height - 750 ))
+        #SHADES FOR BUTTONS
+        #RESET BUTTON
+        pygame.draw.line(screen, WHITE, (100, 50), (230, 50), 3)  # top side
+        pygame.draw.line(screen, WHITE, (100, 50), (100, 105), 3)  # left
+        pygame.draw.line(screen, BLACK, (100, 105), (230, 105), 3)  # buttom
+        pygame.draw.line(screen, BLACK, (230, 50), (230, 105), 3)  # right
+        #MENU BUTTON
+        pygame.draw.line(screen, WHITE, (350, 50), (490, 50), 3)  # top side
+        pygame.draw.line(screen, WHITE, (350, 50), (350, 105), 3)  # left
+        pygame.draw.line(screen, BLACK, (350, 105), (490, 105), 3)  # buttom
+        pygame.draw.line(screen, BLACK, (490, 50), (490, 105), 3)  # right
+
+        #QUIT BUTTON
+        pygame.draw.line(screen, WHITE, (600, 50), (720, 50), 3)  # top side
+        pygame.draw.line(screen, WHITE, (600, 50), (600, 105), 3)  # left
+        pygame.draw.line(screen, BLACK, (600, 105), (720, 105), 3)  # buttom
+        pygame.draw.line(screen, BLACK, (720, 50), (720, 105), 3)  # right
+
+
         pygame.display.update()
 
 def draw():
@@ -150,3 +182,4 @@ def draw():
 # Run playerboard method
 if __name__ == '__main__':
     playerboard()
+
