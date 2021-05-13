@@ -272,6 +272,10 @@ def playerboard():
                                     highlight = True
                                 else:
                                     print("It is stone's turn, please select a stone icon")
+                            # Check if:
+                            # Tile clicked does not have a wood/stone icon
+                            # If there's a tile currently highlighted
+                            # If it's stone's turn
                             elif tileGrid[i].isoccupied() is None and highlight is True and playerTurn % 2 == 0:
                                 # Take copy of previous game board with empty tile and get ready to draw on it
                                 screen.blit(tempScreen, (0, 0))
@@ -312,6 +316,10 @@ def playerboard():
                                     highlight = True
                                 else:
                                     print("It is wood's turn, please select a wood icon")
+                            # Check if:
+                            # Tile clicked does not have a wood/stone icon
+                            # If there's a tile currently highlighted
+                            # If it's wood's turn
                             elif tileGrid[i].isoccupied() is None and highlight is True and playerTurn % 2 == 1:
                                 # Take copy of previous game board with empty tile and get ready to draw on it
                                 screen.blit(tempScreen, (0, 0))
@@ -338,6 +346,8 @@ def playerboard():
                             # Give message if player tries clicking on an empty tile while it is their turn to move
                             else:
                                 print("Tile is empty, please select a different tile to move from")
+                        # Give message if player tries placing wood/stone icon in an occupied tile
+                        # Only prints during placement of initial 6 icons
                         else:
                             print("Tile is occupied, please select a different tile")
 
