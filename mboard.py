@@ -168,6 +168,8 @@ def playerboard():
     highlight = False
     # Temp reference for when moving wood/stone icons
     tempScreen = None
+    # Temp reference for clearing the previous turn's tile of player data
+    tempIndex = None
     # Reference for whose turn it is
     playerTurn = 0
 
@@ -255,27 +257,62 @@ def playerboard():
                             # ***** STONE'S TURN *****
                             # Check if:
                             # Tile clicked has a wood/stone icon
-                            # If there's nothing already currently highlighted
-                            # If it's stone's turn
-                            if tileGrid[i].isoccupied() is not None and highlight is False and playerTurn % 2 == 0:
-                                # Check to make sure the icon clicked belongs to stone and not wood
-                                if tileGrid[i].getWhatPlayer() == 1:
+                            # It's stone's turn
+                            if tileGrid[i].isoccupied() is not None and playerTurn % 2 == 0:
+                                # Check if:
+                                # The icon clicked belongs to stone, not wood
+                                # There's nothing currently highlighted
+                                if tileGrid[i].getWhatPlayer() == 1 and highlight is False:
                                     # Create a copy of the board and all wood/stone icons
                                     tempScreen = screen.copy()
                                     # Place an empty tile where player clicked, but only in the COPY of the board
                                     tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
-                                    # Highlight current tile clicked
+                                    # Highlight the tile that was clicked
                                     selecttile(tileGrid[i], stone)
                                     # Play click sound
                                     clicksoundhi.play()
+                                    # Store current tileGrid index for clearing player data on next loop iteration
+                                    tempIndex = i
                                     # A tile is now highlighted, set highlight to True for if statement control
                                     highlight = True
+                                # Check if:
+                                # The icon clicked belongs to stone, not wood
+                                # There's a tile currently highlighted
+                                # The tile clicked is the same one that's highlighted
+                                elif tileGrid[i].getWhatPlayer() == 1 and highlight is True and i == tempIndex:
+                                    # Un-highlight the tile that was clicked
+                                    deselecttile(tileGrid[i], stone)
+                                    # Play click sound
+                                    clicksoundlo.play()
+                                    # A tile is no longer highlighted, set highlight to False for if statement control
+                                    highlight = False
+                                # Check if:
+                                # The icon clicked belongs to stone, not wood
+                                # There's a tile currently highlighted
+                                # The above elif was passed, meaning the tile clicked isn't the one highlighted
+                                elif tileGrid[i].getWhatPlayer() == 1 and highlight is True:
+                                    # Un-highlight the previous tile
+                                    deselecttile(tileGrid[tempIndex], stone)
+                                    # Highlight the new tile that was clicked
+                                    selecttile(tileGrid[i], stone)
+                                    # Play click sound
+                                    clicksoundhi.play()
+                                    # Store current tileGrid index for clearing player data on next loop iteration
+                                    tempIndex = i
+                                    # Create a copy of the board and all wood/stone icons
+                                    tempScreen = screen.copy()
+                                    # Place an empty tile where player clicked, but only in the COPY of the board
+                                    tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
+                                # Give message if player tries clicking on a wood-occupied tile while trying to move
+                                elif tileGrid[i].getWhatPlayer() == 2 and highlight is True:
+                                    print("Tile is occupied, please select a different tile to move to")
+                                # Give message if player tries clicking a wood icon during stone's turn
                                 else:
                                     print("It is stone's turn, please select a stone icon")
                             # Check if:
                             # Tile clicked does not have a wood/stone icon
-                            # If there's a tile currently highlighted
-                            # If it's stone's turn
+                            # There's a tile currently highlighted
+                            # It's stone's turn
                             elif tileGrid[i].isoccupied() is None and highlight is True and playerTurn % 2 == 0:
                                 # Take copy of previous game board with empty tile and get ready to draw on it
                                 screen.blit(tempScreen, (0, 0))
@@ -285,6 +322,10 @@ def playerboard():
                                 tileGrid[i].drawiconrect()
                                 # Fill tile with player data
                                 tileGrid[i].setWhatPlayer(1)
+                                # Clear highlighted tile of wood/stone icon detector so it can be clicked again later
+                                tileGrid[tempIndex].eraseiconrect()
+                                # Clear highlighted tile of player data
+                                tileGrid[tempIndex].setWhatPlayer(0)
                                 # Update game board with stone icon
                                 pygame.display.flip()
                                 # Play stone placement sound
@@ -301,19 +342,55 @@ def playerboard():
                             # Tile clicked has a wood/stone icon
                             # If there's nothing already currently highlighted
                             # If it's wood's turn
-                            elif tileGrid[i].isoccupied() is not None and highlight is False and playerTurn % 2 == 1:
-                                # Check to make sure the icon clicked belongs to wood and not stone
-                                if tileGrid[i].getWhatPlayer() == 2:
+                            elif tileGrid[i].isoccupied() is not None and playerTurn % 2 == 1:
+                                # Check if:
+                                # The icon clicked belongs to wood, not stone
+                                # There's nothing currently highlighted
+                                if tileGrid[i].getWhatPlayer() == 2 and highlight is False:
                                     # Create a copy of the board and all wood/stone icons
                                     tempScreen = screen.copy()
                                     # Place an empty tile where player clicked, but only in the COPY of the board
                                     tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
-                                    # Highlight current tile clicked
+                                    # Highlight the tile that was clicked
                                     selecttile(tileGrid[i], wood)
                                     # Play click sound
                                     clicksoundhi.play()
+                                    # Store current tileGrid index for clearing player data on next loop iteration
+                                    tempIndex = i
                                     # A tile is now highlighted, set highlight to True for if statement control
                                     highlight = True
+                                # Check if:
+                                # The icon clicked belongs to wood, not stone
+                                # There's a tile currently highlighted
+                                # The tile clicked is the same one that's highlighted
+                                elif tileGrid[i].getWhatPlayer() == 2 and highlight is True and i == tempIndex:
+                                    # Un-highlight the tile that was clicked
+                                    deselecttile(tileGrid[i], wood)
+                                    # Play click sound
+                                    clicksoundlo.play()
+                                    # A tile is no longer highlighted, set highlight to False for if statement control
+                                    highlight = False
+                                # Check if:
+                                # The icon clicked belongs to wood, not stone
+                                # There's a tile currently highlighted
+                                # The above elif was passed, meaning the tile clicked isn't the one highlighted
+                                elif tileGrid[i].getWhatPlayer() == 2 and highlight is True:
+                                    # Un-highlight the previous tile
+                                    deselecttile(tileGrid[tempIndex], wood)
+                                    # Highlight the new tile that was clicked
+                                    selecttile(tileGrid[i], wood)
+                                    # Play click sound
+                                    clicksoundhi.play()
+                                    # Store current tileGrid index for clearing player data on next loop iteration
+                                    tempIndex = i
+                                    # Create a copy of the board and all wood/stone icons
+                                    tempScreen = screen.copy()
+                                    # Place an empty tile where player clicked, but only in the COPY of the board
+                                    tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
+                                # Give message if player tries clicking on a stone-occupied tile while trying to move
+                                elif tileGrid[i].getWhatPlayer() == 1 and highlight is True:
+                                    print("Tile is occupied, please select a different tile to move to")
+                                # Give message if player tries clicking a stone icon during wood's turn
                                 else:
                                     print("It is wood's turn, please select a wood icon")
                             # Check if:
@@ -329,6 +406,10 @@ def playerboard():
                                 tileGrid[i].drawiconrect()
                                 # Fill tile with player data
                                 tileGrid[i].setWhatPlayer(2)
+                                # Clear highlighted tile of wood/stone icon detector so it can be clicked again later
+                                tileGrid[tempIndex].eraseiconrect()
+                                # Clear highlighted tile of player data
+                                tileGrid[tempIndex].setWhatPlayer(0)
                                 # Update game board with wood icon
                                 pygame.display.flip()
                                 # Play wood placement sound
@@ -340,9 +421,6 @@ def playerboard():
                                 highlight = False
                                 # An icon was moved, check for any new winners
                                 tileGrid[i].getWinner()
-                            # Give message if player tries clicking on an occupied tile while trying to move
-                            elif tileGrid[i].isoccupied() is not None and highlight is True:
-                                print("Tile is occupied, please select a different tile to move to")
                             # Give message if player tries clicking on an empty tile while it is their turn to move
                             else:
                                 print("Tile is empty, please select a different tile to move from")
@@ -394,20 +472,16 @@ def selecttile(inputTile, inputIcon):
     # Update game board with highlighted tile
     pygame.display.flip()
 
-    # Clear highlighted board tile of wood/stone detector rectangle and player data
-    # Necessary so once an icon is moved, that tile can be clicked on again and filled with another wood/stone icon
-    inputTile.eraseiconrect()
-    inputTile.setWhatPlayer(0)
-
-# NOT YET USED
-def deselecttile(inputTile, inputIcon, playerNum):
+# Method that un-highlights a tile clicked by a player
+def deselecttile(inputTile, inputIcon):
+    # Take a copy of the current game board and get ready to draw on it
     screen.blit(pygame.display.get_surface(), (0, 0))
+    # Place a highlighted tile on game board
     screen.blit(tilepicture, (inputTile.getxcoord(), inputTile.getycoord()))
+    # Re-draw wood/stone icon over highlighted tile
     screen.blit(inputIcon, (inputTile.getxcoord() + 37, inputTile.getycoord() + 37))
+    # Update game board with highlighted tile
     pygame.display.flip()
-
-    inputTile.drawiconrect()
-    inputTile.setWhatPlayer(playerNum)
 
 def draw():
     # Fill screen with black background
