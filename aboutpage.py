@@ -137,6 +137,7 @@ def aboutPage():
 
         if 10 <= mouse[0] <= 110 and 10 <= mouse[1] <= 60:
             pygame.draw.rect(screen, color_light, [10, 10, 100, 50])
+        screen.blit(text_back_button,(25,15))
 
 
 
