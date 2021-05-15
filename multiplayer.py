@@ -110,7 +110,7 @@ def multiplayer():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ok_button.collidepoint(event.pos):
                     print("okay button was pressed")
-                    mboard.playerboard()
+                    mboard.playerboard(False)
 
 
 
