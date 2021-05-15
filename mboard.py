@@ -5,7 +5,7 @@ pygame.init()
 class Tile:
     # "image" is a pygame.Surface object given by pygame.image.load() when creating a Tile object
     # "tileoccupied" is a pygame.Rect (detector rectangle) object given by pygame.Surface.get_rect()
-    # "x" and "y" are the coordinates for drawing detector rectangles
+    # "x" and "y" are the coordinates for drawing detector rectangles (starting from the top left of the screen)
     def __init__(self, image, x, y, whatPlayer):
         self.tilepicture = image
         self.tileoccupied = None
@@ -57,56 +57,10 @@ class Tile:
     def isoccupied(self):
         return self.tileoccupied
 
-    def getWinner(self):
-        # checks if player 1 has 3 in a row for vertical
-        if tileGrid[0].getWhatPlayer() == 1 and tileGrid[3].getWhatPlayer() == 1 and tileGrid[6].getWhatPlayer() == 1:
-            print("player one wins")
-        elif tileGrid[1].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[7].getWhatPlayer() == 1:
-            print("player one wins")
-        elif tileGrid[2].getWhatPlayer() == 1 and tileGrid[5].getWhatPlayer() == 1 and tileGrid[8].getWhatPlayer() == 1:
-            print("player one wins")
-
-        # checks if player 1 has 3 in a row for horizontal
-        elif tileGrid[0].getWhatPlayer() == 1 and tileGrid[1].getWhatPlayer() == 1 and tileGrid[2].getWhatPlayer() == 1:
-            print("player one wins")
-        elif tileGrid[3].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[5].getWhatPlayer() == 1:
-            print("player one wins")
-        elif tileGrid[6].getWhatPlayer() == 1 and tileGrid[7].getWhatPlayer() == 1 and tileGrid[8].getWhatPlayer() == 1:
-            print("player one wins")
-
-        # checks if player 1 has 3 in a row for the diagonal
-        elif tileGrid[0].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[8].getWhatPlayer() == 1:
-            print("player one wins")
-        elif tileGrid[2].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[6].getWhatPlayer() == 1:
-            print("player one wins")
-
-        # checks if player 2 has 3 in a row for vertical
-        if tileGrid[0].getWhatPlayer() == 2 and tileGrid[3].getWhatPlayer() == 2 and tileGrid[6].getWhatPlayer() == 2:
-            print("player two wins")
-        elif tileGrid[1].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[7].getWhatPlayer() == 2:
-            print("player two wins")
-        elif tileGrid[2].getWhatPlayer() == 2 and tileGrid[5].getWhatPlayer() == 2 and tileGrid[8].getWhatPlayer() == 2:
-            print("player two wins")
-
-        # checks if player 2 has 3 in a row for horizontal
-        elif tileGrid[0].getWhatPlayer() == 2 and tileGrid[1].getWhatPlayer() == 2 and tileGrid[2].getWhatPlayer() == 2:
-            print("player two wins")
-        elif tileGrid[3].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[5].getWhatPlayer() == 2:
-            print("player two wins")
-        elif tileGrid[6].getWhatPlayer() == 2 and tileGrid[7].getWhatPlayer() == 2 and tileGrid[8].getWhatPlayer() == 2:
-            print("player two wins")
-
-        # checks if player 2 has 3 in a row for the diagonal
-        elif tileGrid[0].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[8].getWhatPlayer() == 2:
-            print("player two wins")
-        elif tileGrid[2].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[6].getWhatPlayer() == 2:
-            print("player two wins")
-
 #title and icons
 pygame.display.set_caption("Woods and Stones")
 icon = pygame.image.load('gameico.ico')
 pygame.display.set_icon(icon)
-
 
 # Set size of the user screen
 size = width, height = 800, 800
@@ -143,24 +97,28 @@ woodsound = pygame.mixer.Sound("woodsound.mp3")
 clicksoundhi = pygame.mixer.Sound("MouseClickHi.mp3")
 clicksoundlo = pygame.mixer.Sound("MouseClickLo.mp3")
 
-#colors for retry and quit
+# colors for retry and quit
 color = (255, 255, 255)
-#colors for the different shades for the buttons
+# colors for the different shades for the buttons
 color_light = (77, 219, 181)
 color_dark = (0, 180, 0)
-BLACK=(0,0,0)
-WHITE=(255,255,255)
-#colors for the different shades for the buttons
-color_light = (100, 100, 100)
-color_dark = (0, 180, 0)
-#fonts and font size for retry and quit buttons
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+p_color= (181, 141, 56)
+
+# fonts and font size for retry and quit buttons
 quitFont = pygame.font.SysFont("corbel", 60)
 retryFont = pygame.font.SysFont("corbel", 55)
-#the words for the buttons
+which_go_next = pygame.font.SysFont("corbel", 50)
+move= pygame.font.SysFont("corbel", 30)
+# the words for the buttons
 quit = quitFont.render("Quit", True, color)
 reset = retryFont.render("Reset", True, color)
 
-
+# Player's turn placement
+stone_go_next = which_go_next.render("Stone's turn", True, color)
+wood_go_next = which_go_next.render("Wood's turn", True, color)
+now_move= move.render("Start moving around", True, color)
 
 # Define method that creates player checkerboard and the screen it opens in
 def playerboard():
@@ -175,6 +133,10 @@ def playerboard():
 
     # Draw blank checkerboard in screen
     draw()
+
+    # Display player turn at the top of the game board
+    pygame.draw.rect(screen, p_color, [width / 2 - 150, 50, 330, 60])
+    screen.blit(stone_go_next, (width / 2 - 145, 50))
 
     # Update screen
     pygame.display.flip()
@@ -201,7 +163,7 @@ def playerboard():
                     draw()
                     pygame.display.flip()
                     playerTurn = 0
-                    # Check for mouse button release
+            # Check for mouse button release
             if event.type == pygame.MOUSEBUTTONUP:
                 # For loop that goes through tileGrid array full of game board tile detector rectangles
                 for i in range(0, 9):
@@ -232,7 +194,11 @@ def playerboard():
                                 # Increment player turn by 1 post-click
                                 playerTurn += 1
                                 # checks if anyone has a three in a row yet
-                                tileGrid[i].getWinner()
+                                getWinner()
+
+                                # Display player turn at the top of the game board
+                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 50, 330, 60])
+                                screen.blit(wood_go_next, (width / 2 - 145, 50))
                             else: # playerTurn % 2 == 1:
                                 # get_surface() takes a copy image of the current board
                                 # blit() draws it on a currently undisplayed frame
@@ -251,9 +217,15 @@ def playerboard():
                                 # Increment player turn by 1 post-click
                                 playerTurn += 1
                                 # checks if anyone has a three in a row yet
-                                tileGrid[i].getWinner()
+                                getWinner()
+
+                                # Display player turn at the top of the game board
+                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 50, 330, 60])
+                                screen.blit(stone_go_next, (width / 2 - 145, 50))
                         # All pieces have been placed and it's now time to move them if no winner was found
                         elif playerTurn > 5:
+                            pygame.draw.rect(screen, p_color, [width / 2 - 150, 50, 330, 60])
+                            screen.blit(now_move, (width / 2 - 145, 50))
                             # ***** STONE'S TURN *****
                             # Check if:
                             # Tile clicked has a wood/stone icon
@@ -336,7 +308,7 @@ def playerboard():
                                 # Set highlight to False for if statement control
                                 highlight = False
                                 # An icon was moved, check for any new winners
-                                tileGrid[i].getWinner()
+                                getWinner()
                             # ***** WOOD'S TURN *****
                             # Check if:
                             # Tile clicked has a wood/stone icon
@@ -420,7 +392,7 @@ def playerboard():
                                 # Set highlight to False for if statement control
                                 highlight = False
                                 # An icon was moved, check for any new winners
-                                tileGrid[i].getWinner()
+                                getWinner()
                             # Give message if player tries clicking on an empty tile while it is their turn to move
                             else:
                                 print("Tile is empty, please select a different tile to move from")
@@ -483,6 +455,20 @@ def deselecttile(inputTile, inputIcon):
     # Update game board with highlighted tile
     pygame.display.flip()
 
+def winner(win):
+    screen.fill(background)
+    # Set size of the user screen
+    size = width, height = 800, 800
+    font1 = pygame.font.SysFont("comicsansms", 40)
+
+    if win == 1:
+        playerwon = "Stones wins the game"
+    else:
+        playerwon = "Woods wins the game"
+
+    winnerlabel = font1.render(playerwon, True, (255, 255, 255))
+    screen.blit(winnerlabel, (100, 200))
+
 def draw():
     # Fill screen with black background
     screen.fill(background)
@@ -505,6 +491,245 @@ def draw():
     screen.blit(tilepicture, (150, 500))
     screen.blit(tilepicture, (325, 500))
     screen.blit(tilepicture, (500, 500))
+
+# Method that checks each winning combination for both stone and wood
+def getWinner():
+    clock = pygame.time.Clock()
+    # checks if player 1 has 3 in a row for vertical
+    if tileGrid[0].getWhatPlayer() == 1 and tileGrid[3].getWhatPlayer() == 1 and tileGrid[6].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (150, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (150, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+    elif tileGrid[1].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[7].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+    elif tileGrid[2].getWhatPlayer() == 1 and tileGrid[5].getWhatPlayer() == 1 and tileGrid[8].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+
+    # checks if player 1 has 3 in a row for horizontal
+    elif tileGrid[0].getWhatPlayer() == 1 and tileGrid[1].getWhatPlayer() == 1 and tileGrid[2].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 150, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 150, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+    elif tileGrid[3].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[5].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 325, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 325, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+    elif tileGrid[6].getWhatPlayer() == 1 and tileGrid[7].getWhatPlayer() == 1 and tileGrid[8].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 500, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 500, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 500, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 500, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+
+    # checks if player 1 has 3 in a row for the diagonal
+    elif tileGrid[0].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[8].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+    elif tileGrid[2].getWhatPlayer() == 1 and tileGrid[4].getWhatPlayer() == 1 and tileGrid[6].getWhatPlayer() == 1:
+        print("player one wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (150, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (150, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(1)
+
+    # checks if player 2 has 3 in a row for vertical
+    if tileGrid[0].getWhatPlayer() == 2 and tileGrid[3].getWhatPlayer() == 2 and tileGrid[6].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (150, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (150, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
+    elif tileGrid[1].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[7].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
+    elif tileGrid[2].getWhatPlayer() == 2 and tileGrid[5].getWhatPlayer() == 2 and tileGrid[8].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
+
+    # checks if player 2 has 3 in a row for horizontal
+    elif tileGrid[0].getWhatPlayer() == 2 and tileGrid[1].getWhatPlayer() == 2 and tileGrid[2].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 150, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 150, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
+    elif tileGrid[3].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[5].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 325, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 325, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
+    elif tileGrid[6].getWhatPlayer() == 2 and tileGrid[7].getWhatPlayer() == 2 and tileGrid[8].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 500, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 500, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 500, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 500, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
+
+    # checks if player 2 has 3 in a row for the diagonal
+    elif tileGrid[0].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[8].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if  i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (500, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (150, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (500, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
+    elif tileGrid[2].getWhatPlayer() == 2 and tileGrid[4].getWhatPlayer() == 2 and tileGrid[6].getWhatPlayer() == 2:
+        print("player two wins")
+        for i in range(0, 7):
+            clock.tick(3)
+            if i % 2 == 0:
+                pygame.draw.rect(screen, WHITE, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, WHITE, (150, 500, 150, 150), 5)
+            else:
+                pygame.draw.rect(screen, BLACK, (500, 150, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (325, 325, 150, 150), 5)
+                pygame.draw.rect(screen, BLACK, (150, 500, 150, 150), 5)
+            pygame.display.flip()
+        winner(2)
 
 # Run playerboard method
 if __name__ == '__main__':
