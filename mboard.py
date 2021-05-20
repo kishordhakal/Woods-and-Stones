@@ -160,6 +160,10 @@ def playerboard(winner_is_decided):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Checks if player clicks the Menu button and returns them to the main menu if true
                 if width- 450 <= mouse[0] <= width-280 and height - 750 <= mouse[1] <= height - 700:
+                    for i in range(0, 9):
+                        tileGrid[i].eraseiconrect()
+                        tileGrid[i].setWhatPlayer(0)
+
                     import frontpage
                     frontpage.main_menu()
                 #checks the location of the mouse click
@@ -479,8 +483,6 @@ def playerboard(winner_is_decided):
             screen.blit(score_label1, (700, 170))
 
         # update the display
-
-
         pygame.display.update()
 
 # Method that highlights a tile clicked by a player
