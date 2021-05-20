@@ -133,7 +133,7 @@ def main_menu():
                 sys.exit()
         if single.draw_button():
             print('Single Player')
-            playerboard()
+            playerboard(False)
 
         if multi.draw_button():
             print('Multi Player')
