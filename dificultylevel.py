@@ -5,6 +5,8 @@ from pygame.locals import*
 from aboutpage import *
 from board import *
 from multiplayer import *
+from begineer import *
+from intermediate import *
 
 #initialize the pygame
 pygame.init()
@@ -102,9 +104,9 @@ class button():
         screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 25))
         return action
 
-single= button(200, 200, 'Single Player')
-multi = button(200, 350, 'Multi-Player')
-about = button(200, 500, 'About')
+single= button(200, 200, 'Begineer')
+multi = button(200, 350, 'Intermediate')
+about = button(200, 500, 'Advanced AI')
 quit = button(200, 650, 'Quit')
 
 
@@ -112,38 +114,30 @@ quit = button(200, 650, 'Quit')
 
     #font for the button
 smallfont = pygame.font.SysFont('Corbel', 35)
-    #render text in that
-
-
-
-
-
-
 
 #MAIN LOOP
 #function to avoid the circular import
-def main_menu():
+def dificultylevel():
  while True:
 
         #background image
         screen.blit(background,(0,0))
 
         for event in pygame.event.get():
+            #pressed quit button
          if event.type == pygame.QUIT:
                 sys.exit()
+            #pressed begineer
         if single.draw_button():
-            print('Single Player')
-            #playerboard(False)
-            import  dificultylevel
-            dificultylevel()
-
+            begineerboard(False)
+            #pressed intermediate
         if multi.draw_button():
-            print('Multi Player')
-            multiplayer()
+            intermediateboard(False)
+         #Advanced AI
         if about.draw_button():
-            print('About')
-            aboutPage()
 
+            playerboard(False)
+        #quit button
         if quit.draw_button():
             print('quit')
             sys.exit()
@@ -155,4 +149,4 @@ def main_menu():
         pygame.draw.rect(screen, ORANGE, (0, 0, 800, 80))
         font.render_to(screen, (40, 10), 'WOODS and STONES', (255, 255, 255, 250))
         pygame.display.update()
-main_menu()
+dificultylevel()
