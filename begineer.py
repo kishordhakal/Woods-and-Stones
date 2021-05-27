@@ -164,6 +164,7 @@ boardRect = board.get_rect()
 # These Tile objects hold icons for the game board tiles and have methods for icon detection in the game loop
 tilepicture = pygame.image.load("tile.png")
 tilehighlight = pygame.image.load("tileclicked.png")
+tilemoveto = pygame.image.load("moveto.png")
 tileGrid = [Tile(tilepicture, 150, 150, 0), Tile(tilepicture, 325, 150, 0), Tile(tilepicture, 500, 150, 0), # TOP ROW
             Tile(tilepicture, 150, 325, 0), Tile(tilepicture, 325, 325, 0), Tile(tilepicture, 500, 325, 0), # MIDDLE ROW
             Tile(tilepicture, 150, 500, 0), Tile(tilepicture, 325, 500, 0), Tile(tilepicture, 500, 500, 0)] # BOTTOM ROW
@@ -318,6 +319,8 @@ def begineerboard(winner_is_decided):
                                         tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
                                         # Highlight the tile that was clicked
                                         selecttile(tileGrid[i], stone)
+                                        # Highlight where player can move to
+                                        premove(i)
                                         # Play click sound
                                         clicksoundhi.play()
                                         # Store current tileGrid index for clearing player data on next loop iteration
@@ -331,6 +334,8 @@ def begineerboard(winner_is_decided):
                                     elif tileGrid[i].getWhatPlayer() == 1 and highlight is True and i == tempIndex:
                                         # Un-highlight the tile that was clicked
                                         deselecttile(tileGrid[i], stone)
+                                        # Erase previous tiles player could potentially move to
+                                        postmove(tempIndex)
                                         # Play click sound
                                         clicksoundlo.play()
                                         # A tile is no longer highlighted, set highlight to False for if statement control
@@ -344,12 +349,16 @@ def begineerboard(winner_is_decided):
                                         deselecttile(tileGrid[tempIndex], stone)
                                         # Highlight the new tile that was clicked
                                         selecttile(tileGrid[i], stone)
+                                        # Erase previous tiles player could potentially move to
+                                        postmove(tempIndex)
                                         # Play click sound
                                         clicksoundhi.play()
                                         # Store current tileGrid index for clearing player data on next loop iteration
                                         tempIndex = i
                                         # Create a copy of the board and all wood/stone icons
                                         tempScreen = screen.copy()
+                                        # Highlight where player can move to
+                                        premove(i)
                                         # Place an empty tile where player clicked, but only in the COPY of the board
                                         tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
                                     # Give message if player tries clicking on a wood-occupied tile while trying to move
@@ -497,6 +506,135 @@ def deselecttile(inputTile, inputIcon):
     # Update game board with highlighted tile
     pygame.display.flip()
 
+
+# Method that highlights where a player can move once a wood/stone icon is selected
+def premove(inputIndex):
+    if inputIndex == 0:
+        if tileGrid[1].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[1].getxcoord(), tileGrid[1].getycoord()))
+        if tileGrid[3].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[3].getxcoord(), tileGrid[3].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 1:
+        if tileGrid[0].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[0].getxcoord(), tileGrid[0].getycoord()))
+        if tileGrid[2].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[2].getxcoord(), tileGrid[2].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 2:
+        if tileGrid[1].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[1].getxcoord(), tileGrid[1].getycoord()))
+        if tileGrid[5].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[5].getxcoord(), tileGrid[5].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 3:
+        if tileGrid[0].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[0].getxcoord(), tileGrid[0].getycoord()))
+        if tileGrid[6].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[6].getxcoord(), tileGrid[6].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 4:
+        for i in range(0, 9):
+            if tileGrid[i].isoccupied() is None:
+                screen.blit(tilemoveto, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
+    elif inputIndex == 5:
+        if tileGrid[2].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[2].getxcoord(), tileGrid[2].getycoord()))
+        if tileGrid[8].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[8].getxcoord(), tileGrid[8].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 6:
+        if tileGrid[3].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[3].getxcoord(), tileGrid[3].getycoord()))
+        if tileGrid[7].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[7].getxcoord(), tileGrid[7].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 7:
+        if tileGrid[6].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[6].getxcoord(), tileGrid[6].getycoord()))
+        if tileGrid[8].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[8].getxcoord(), tileGrid[8].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    else: # inputIndex == 8
+        if tileGrid[5].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[5].getxcoord(), tileGrid[5].getycoord()))
+        if tileGrid[7].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[7].getxcoord(), tileGrid[7].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilemoveto, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+
+
+# Method that un-highlights where a player can move once a wood/stone icon is deselected
+def postmove(inputIndex):
+    if inputIndex == 0:
+        if tileGrid[1].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[1].getxcoord(), tileGrid[1].getycoord()))
+        if tileGrid[3].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[3].getxcoord(), tileGrid[3].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 1:
+        if tileGrid[0].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[0].getxcoord(), tileGrid[0].getycoord()))
+        if tileGrid[2].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[2].getxcoord(), tileGrid[2].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 2:
+        if tileGrid[1].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[1].getxcoord(), tileGrid[1].getycoord()))
+        if tileGrid[5].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[5].getxcoord(), tileGrid[5].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 3:
+        if tileGrid[0].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[0].getxcoord(), tileGrid[0].getycoord()))
+        if tileGrid[6].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[6].getxcoord(), tileGrid[6].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 4:
+        for i in range(0, 9):
+            if tileGrid[i].isoccupied() is None:
+                screen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
+    elif inputIndex == 5:
+        if tileGrid[2].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[2].getxcoord(), tileGrid[2].getycoord()))
+        if tileGrid[8].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[8].getxcoord(), tileGrid[8].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 6:
+        if tileGrid[3].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[3].getxcoord(), tileGrid[3].getycoord()))
+        if tileGrid[7].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[7].getxcoord(), tileGrid[7].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    elif inputIndex == 7:
+        if tileGrid[6].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[6].getxcoord(), tileGrid[6].getycoord()))
+        if tileGrid[8].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[8].getxcoord(), tileGrid[8].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+    else: # inputIndex == 8
+        if tileGrid[5].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[5].getxcoord(), tileGrid[5].getycoord()))
+        if tileGrid[7].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[7].getxcoord(), tileGrid[7].getycoord()))
+        if tileGrid[4].isoccupied() is None:
+            screen.blit(tilepicture, (tileGrid[4].getxcoord(), tileGrid[4].getycoord()))
+
+
 # Method that checks if player is moving to an adjacent tile on the game board
 # "currentIndex" is the tile the player is trying to move to
 # "prevIndex" is the tile the player is trying to move from
@@ -577,6 +715,30 @@ def draw():
     screen.blit(tilepicture, (150, 500))
     screen.blit(tilepicture, (325, 500))
     screen.blit(tilepicture, (500, 500))
+    # TILE CONNECTORS
+    pygame.draw.line(screen, (203, 174, 12), (220, 300), (220, 325), 30)
+    pygame.draw.line(screen, (203, 174, 12), (220, 475), (220, 500), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (395, 300), (395, 325), 30)
+    pygame.draw.line(screen, (203, 174, 12), (395, 475), (395, 500), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (570, 300), (570, 325), 30)
+    pygame.draw.line(screen, (203, 174, 12), (570, 475), (570, 500), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (300, 225), (325, 225), 30)
+    pygame.draw.line(screen, (203, 174, 12), (475, 220), (500, 220), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (300, 395), (325, 395), 30)
+    pygame.draw.line(screen, (203, 174, 12), (475, 395), (500, 395), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (300, 570), (325, 570), 30)
+    pygame.draw.line(screen, (203, 174, 12), (475, 570), (500, 570), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (275, 275), (350, 350), 30)
+    pygame.draw.line(screen, (203, 174, 12), (450, 450), (525, 525), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (525, 275), (450, 350), 30)
+    pygame.draw.line(screen, (203, 174, 12), (350, 450), (275, 525), 30)
 
     # Display player turn at the top of the game board
     pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])

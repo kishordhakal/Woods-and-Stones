@@ -104,7 +104,7 @@ class button():
         screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 25))
         return action
 
-single= button(200, 200, 'Begineer')
+single= button(200, 200, 'Beginner')
 multi = button(200, 350, 'Intermediate')
 about = button(200, 500, 'Advanced AI')
 quit = button(200, 650, 'Quit')
