@@ -586,6 +586,30 @@ def draw():
     screen.blit(tilepicture, (150, 500))
     screen.blit(tilepicture, (325, 500))
     screen.blit(tilepicture, (500, 500))
+    # TILE CONNECTORS
+    pygame.draw.line(screen, (203, 174, 12), (220, 300), (220, 325), 30)
+    pygame.draw.line(screen, (203, 174, 12), (220, 475), (220, 500), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (395, 300), (395, 325), 30)
+    pygame.draw.line(screen, (203, 174, 12), (395, 475), (395, 500), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (570, 300), (570, 325), 30)
+    pygame.draw.line(screen, (203, 174, 12), (570, 475), (570, 500), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (300, 225), (325, 225), 30)
+    pygame.draw.line(screen, (203, 174, 12), (475, 220), (500, 220), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (300, 395), (325, 395), 30)
+    pygame.draw.line(screen, (203, 174, 12), (475, 395), (500, 395), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (300, 570), (325, 570), 30)
+    pygame.draw.line(screen, (203, 174, 12), (475, 570), (500, 570), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (275, 275), (350, 350), 30)
+    pygame.draw.line(screen, (203, 174, 12), (450, 450), (525, 525), 30)
+
+    pygame.draw.line(screen, (203, 174, 12), (525, 275), (450, 350), 30)
+    pygame.draw.line(screen, (203, 174, 12), (350, 450), (275, 525), 30)
 
     # Display player turn at the top of the game board
     pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
