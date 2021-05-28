@@ -245,7 +245,7 @@ def begineerboard(winner_is_decided):
                         tileGrid[i].setWhatPlayer(0)
 
                     import dificultylevel
-                    dificultylevel.dificultylevel()
+                    dificultylevel.dificultymain()
                 #checks the location of the mouse click
                 #mouse click for quit button then exits
                 if width-200 <= mouse[0] <= width-80 and height-750 <= mouse[1] <= height-700:

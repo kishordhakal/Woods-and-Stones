@@ -47,10 +47,10 @@ class Bot:
         while self.unmoved:
             # First loop looks for the first available tile owned by the computer
             if tileGrid[i].isoccupied() is not None and tileGrid[i].getWhatPlayer() == self.whatplayer:
-
+                j = random.randint(0, 8)
                 for j in range(0, 8):
                     #crating random values for j between 0 to 8
-                    j = random.randint(0, 8)
+
                     # Second loop compares the first available tile to all empty tiles and checks for adjacency
                     # It's impossible for all icons to have no adjacent moves available; no else statement is needed
 
@@ -255,7 +255,7 @@ def intermediateboard(winner_is_decided):
                         tileGrid[i].setWhatPlayer(0)
 
                     import dificultylevel
-                    dificultylevel.dificultylevel()
+                    dificultylevel.dificultymain()
                 #checks the location of the mouse click
                 #mouse click for quit button then exits
                 if width-200 <= mouse[0] <= width-80 and height-750 <= mouse[1] <= height-700:

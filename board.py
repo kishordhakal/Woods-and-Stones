@@ -248,8 +248,8 @@ def playerboard(winner_is_decided):
                         tileGrid[i].eraseiconrect()
                         tileGrid[i].setWhatPlayer(0)
 
-                    import frontpage
-                    frontpage.main_menu()
+                    import dificultylevel
+                    dificultylevel.dificultymain()
 
                 # checks the location of the mouse click
                 # mouse click for quit button then exits

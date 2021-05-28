@@ -2,6 +2,8 @@ import pygame, sys
 from pygame import mixer
 import pygame.freetype
 from pygame.locals import*
+
+
 from aboutpage import *
 from board import *
 from multiplayer import *
@@ -107,6 +109,7 @@ class button():
 single= button(200, 200, 'Beginner')
 multi = button(200, 350, 'Intermediate')
 about = button(200, 500, 'Advanced AI')
+back= button(0,80,'Main menu')
 quit = button(200, 650, 'Quit')
 
 
@@ -117,7 +120,7 @@ smallfont = pygame.font.SysFont('Corbel', 35)
 
 #MAIN LOOP
 #function to avoid the circular import
-def dificultylevel():
+def dificultymain():
  while True:
 
         #background image
@@ -128,6 +131,9 @@ def dificultylevel():
          if event.type == pygame.QUIT:
                 sys.exit()
             #pressed begineer
+        if back.draw_button():
+            import frontpage
+            frontpage.main_menu()
         if single.draw_button():
             begineerboard(False)
             #pressed intermediate
@@ -149,4 +155,7 @@ def dificultylevel():
         pygame.draw.rect(screen, ORANGE, (0, 0, 800, 80))
         font.render_to(screen, (40, 10), 'WOODS and STONES', (255, 255, 255, 250))
         pygame.display.update()
-dificultylevel()
+
+
+if __name__ == '__main__':
+    dificultymain()

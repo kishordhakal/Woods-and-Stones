@@ -4,6 +4,7 @@ import pygame.freetype
 from pygame.locals import*
 from aboutpage import *
 from board import *
+from dificultylevel import dificultymain
 from multiplayer import *
 
 #initialize the pygame
@@ -135,7 +136,7 @@ def main_menu():
             print('Single Player')
             #playerboard(False)
             import  dificultylevel
-            dificultylevel()
+            dificultymain()
 
         if multi.draw_button():
             print('Multi Player')
