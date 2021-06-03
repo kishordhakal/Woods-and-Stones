@@ -192,9 +192,9 @@ p_color = (181, 141, 56)
 # fonts and font size for retry and quit buttons
 quitFont = pygame.font.SysFont("corbel", 60)
 retryFont = pygame.font.SysFont("corbel", 55)
-which_go_next = pygame.font.SysFont("corbel", 50)
-winnerfont = pygame.font.SysFont("corbel", 35)
-move = pygame.font.SysFont("corbel", 30)
+which_go_next = pygame.font.SysFont("corbel", 40)
+winnerfont = pygame.font.SysFont("corbel", 40)
+move = pygame.font.SysFont("corbel", 40)
 wrongpiecefont = pygame.font.SysFont("corbel",40)
 # the words for the buttons
 quit = quitFont.render("Quit", True, color)
@@ -206,11 +206,14 @@ stone_label = winnerfont.render("YOU", True, color)
 woods_label = winnerfont.render("AI", True, color)
 
 # Player's turn placement
-stone_go_next = which_go_next.render("Stone's turn", True, color)
-wood_go_next = which_go_next.render("Wood's turn", True, color)
+stone_go_next = which_go_next.render("Player's turn", True, color)
+wood_go_next = which_go_next.render("AI's turn", True, color)
 now_move = move.render("Start moving around", True, color)
 tileisoccupied = which_go_next.render("Tile is Occupied", True, color)
 selectStone = wrongpiecefont.render("Select a Stone piece.", True, color)
+moveadj= move.render("Move to highlighted tile ", True, color)
+empty = move.render("Tile is empty ", True, color)
+game= move.render("GAME OVER !! ", True, color)
 
 # player's Score
 stone_score = 0
@@ -307,6 +310,9 @@ def playerboard(winner_is_decided):
                                     playerTurn += 1
                                     # checks if anyone has a three in a row yet
                                     winner_is_decided = getWinner(winner_is_decided)
+                                    # Display player turn at the buttom of the game board
+                                    pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                    screen.blit(wood_go_next, (300, 700))
 
                                     if (winner_is_decided == False):
                                         ## ***** WOOD'S TURN (AI) *****
@@ -323,11 +329,14 @@ def playerboard(winner_is_decided):
                                         playerTurn += 1
                                         # checks if anyone has a three in a row yet
                                         winner_is_decided = getWinner(winner_is_decided)
+                                        # Display player turn at the top of the game board
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(stone_go_next, (300, 700))
 
                             # All pieces have been placed and it's now time to move them if no winner was found
                             elif playerTurn > 5:
-                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                screen.blit(now_move, (width / 2 - 145, 700))
+                                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                screen.blit(now_move, (300, 700))
                                 # ***** STONE'S TURN *****
                                 # Check if:
                                 # Tile clicked has a wood/stone icon
@@ -387,13 +396,13 @@ def playerboard(winner_is_decided):
                                         tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
                                     # Give message if player tries clicking on a wood-occupied tile while trying to move
                                     elif tileGrid[i].getWhatPlayer() == 2 and highlight is True:
-                                        pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                        screen.blit(tileisoccupied, (width / 2 - 145, 700))
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(tileisoccupied, (300, 700))
                                         print("Tile is occupied, please select a different tile to move to")
                                     # Give message if player tries clicking a wood icon during stone's turn
                                     else:
-                                        pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                        screen.blit(selectStone, (width / 2 - 145, 700))
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(selectStone, (300, 700))
                                         print("It is stone's turn, please select a stone icon")
                                 # Check if:
                                 # Tile clicked does not have a wood/stone icon
@@ -445,11 +454,17 @@ def playerboard(winner_is_decided):
                                             winner_is_decided = getWinner(winner_is_decided)
 
                                     else:
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(moveadj, (300, 700))
                                         print("Please move to an adjacent tile")
                             else:
-                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                screen.blit(tileisoccupied, (width / 2 - 145, 700))
+                                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                screen.blit(tileisoccupied, (300, 700))
                                 print("Tile is occupied, please select a different tile")
+        # display game over at the buttom of the page
+        if winner_is_decided is True:
+                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                screen.blit(game, (300, 700))
 
         # gets the xy coordinates of the mouse
         mouse = pygame.mouse.get_pos()
@@ -470,6 +485,15 @@ def playerboard(winner_is_decided):
             pygame.draw.rect(screen, color_light, [width - 450, height - 750, 140, 55])
         else:
             pygame.draw.rect(screen, color_dark, [width - 450, height - 750, 140, 55])
+
+        #display scores
+        stone_wins = stone_score
+        wood_wins = wood_score
+        font1 = pygame.font.SysFont("comicsansms", 30)
+        score_label = font1.render(str(stone_score), True, (255, 255, 255))
+        screen.blit(score_label, (55, 175))
+        score_label1 = font1.render(str(wood_score), True, (255, 255, 255))
+        screen.blit(score_label1, (730, 175))
 
         # RESET BUTTON
         pygame.draw.line(screen, WHITE, (100, 50), (230, 50), 3)  # top side
@@ -496,14 +520,6 @@ def playerboard(winner_is_decided):
         screen.blit(stone_label, (width - 780, height - 650))
         screen.blit(woods_label, (width - 100, height - 650))
 
-        if winner_is_decided:
-            stone_wins = stone_score
-            wood_wins = wood_score
-            font1 = pygame.font.SysFont("comicsansms", 30)
-            score_label = font1.render(str(stone_score), True, (255, 255, 255))
-            screen.blit(score_label, (70, 170))
-            score_label1 = font1.render(str(wood_score), True, (255, 255, 255))
-            screen.blit(score_label1, (700, 170))
 
         # update the display
         pygame.display.update()
@@ -770,8 +786,8 @@ def draw():
     pygame.draw.line(screen, (203, 174, 12), (350, 450), (275, 525), 30)
 
     # Display player turn at the top of the game board
-    pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-    screen.blit(stone_go_next, (width / 2 - 145, 700))
+    pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+    screen.blit(stone_go_next, (300, 700))
 
 
 # Method that checks each winning combination for both stone and wood

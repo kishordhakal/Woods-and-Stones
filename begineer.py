@@ -193,8 +193,8 @@ p_color= (181, 141, 56)
 quitFont = pygame.font.SysFont("corbel", 60)
 retryFont = pygame.font.SysFont("corbel", 55)
 which_go_next = pygame.font.SysFont("corbel", 50)
-winnerfont= pygame.font.SysFont("corbel", 30)
-move = pygame.font.SysFont("corbel", 30)
+winnerfont= pygame.font.SysFont("corbel", 40)
+move = pygame.font.SysFont("corbel", 40)
 wrongpiecefont = pygame.font.SysFont("corbel",40)
 # the words for the buttons
 quit = quitFont.render("Quit", True, color)
@@ -212,6 +212,10 @@ wood_go_next = which_go_next.render("Computer's turn", True, color)
 now_move = move.render("Start moving around", True, color)
 selectStone = wrongpiecefont.render("Select a Stone piece.", True, color)
 tileisoccupied = which_go_next.render("Tile is Occupied", True, color)
+moveadj= move.render("Move to highlighted tile ", True, color)
+empty = move.render("Tile is empty ", True, color)
+game= move.render("GAME OVER !! ", True, color)
+
 #player's Score
 player_score= 0
 computer_score= 0
@@ -300,12 +304,12 @@ def begineerboard(winner_is_decided):
                                 winner_is_decided = getWinner(winner_is_decided)
 
                                 # Display player turn at the top of the game board
-                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                screen.blit(wood_go_next, (width / 2 - 145, 700))
+                                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                screen.blit(wood_go_next, (300, 700))
                             # All pieces have been placed and it's now time to move them if no winner was found
                             elif playerTurn > 5:
-                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                screen.blit(now_move, (width / 2 - 145, 700))
+                                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                screen.blit(now_move, (300, 700))
                                 # ***** STONE'S TURN *****
                                 # Check if:
                                 # Tile clicked has a wood/stone icon
@@ -366,13 +370,13 @@ def begineerboard(winner_is_decided):
                                     # Give message if player tries clicking on a wood-occupied tile while trying to move
                                     elif tileGrid[i].getWhatPlayer() == 2 and highlight is True:
                                         # displays to the user that space is currently occupied
-                                        pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                        screen.blit(tileisoccupied, (width / 2 - 145, 700))
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(tileisoccupied, (300, 700))
                                         print("Tile is occupied, please select a different tile to move to")
                                     # Give message if player tries clicking a wood icon during stone's turn
                                     else:
-                                        pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                        screen.blit(selectStone, (width / 2 - 145, 700))
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(selectStone, (300, 700))
                                         print("It is stone's turn, please select a stone icon")
                                 # Check if:
                                 # Tile clicked does not have a wood/stone icon
@@ -404,15 +408,19 @@ def begineerboard(winner_is_decided):
                                         # An icon was moved, check for any new winners
                                         winner_is_decided = getWinner(winner_is_decided)
                                     else:
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(moveadj, (300, 700))
                                         print("Please move to an adjacent tile")
                                 # Give message if player tries clicking on an empty tile while it is their turn to move
                                 else:
+                                    pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                    screen.blit(empty, (300, 700))
                                     print("Tile is empty, please select a different tile to move from")
                             # Give message if player tries placing wood/stone icon in an occupied tile
                             # Only prints during placement of initial 6 icons
                             else:
-                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-                                screen.blit(tileisoccupied, (width / 2 - 145, 700))
+                                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                screen.blit(tileisoccupied, (300, 700))
                                 print("Tile is occupied, please select a different tile")
         if playerTurn % 2 == 1 and winner_is_decided is False:
             if playerTurn < 6:
@@ -433,10 +441,13 @@ def begineerboard(winner_is_decided):
                 winner_is_decided = getWinner(winner_is_decided)
 
             # Display player turn at the top of the game board
-            pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-            screen.blit(stone_go_next, (width / 2 - 145, 700))
+            pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+            screen.blit(stone_go_next, (300, 700))
+        # display game over at the buttom of the page
+        if winner_is_decided is True:
+                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                screen.blit(game, (300, 700))
         # Check for mouse button release
-
         # gets the xy coordinates of the mouse
         mouse = pygame.mouse.get_pos()
         # creates the mouse hover over effect
@@ -464,9 +475,9 @@ def begineerboard(winner_is_decided):
         wood_wins = computer_score
         font1 = pygame.font.SysFont("comicsansms", 30)
         score_label = font1.render(str(player_score), True, (255, 255, 255))
-        screen.blit(score_label, (70, 170))
+        screen.blit(score_label, (55, 175))
         score_label1 = font1.render(str(computer_score), True, (255, 255, 255))
-        screen.blit(score_label1, (700, 170))
+        screen.blit(score_label1, (730, 175))
 
         # RESET BUTTON
         pygame.draw.line(screen, WHITE, (100, 50), (230, 50), 3)  # top side
@@ -750,8 +761,8 @@ def draw():
     pygame.draw.line(screen, (203, 174, 12), (350, 450), (275, 525), 30)
 
     # Display player turn at the top of the game board
-    pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
-    screen.blit(stone_go_next, (width / 2 - 145, 700))
+    pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+    screen.blit(stone_go_next, (300, 700))
 
 # Method that checks each winning combination for both stone and wood
 def getWinner(winner_is_decided):
