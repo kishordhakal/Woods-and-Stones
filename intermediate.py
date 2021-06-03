@@ -83,6 +83,8 @@ class Bot:
                         break
             # Increment array index tracker
             i += 1
+            if i>8:
+                i=0
 
 # Tile class that drives wood/stone icon placement and tile detection
 class Tile:
@@ -203,6 +205,7 @@ retryFont = pygame.font.SysFont("corbel", 55)
 which_go_next = pygame.font.SysFont("corbel", 50)
 winnerfont= pygame.font.SysFont("corbel", 35)
 move = pygame.font.SysFont("corbel", 30)
+wrongpiecefont = pygame.font.SysFont("corbel",40)
 # the words for the buttons
 quit = quitFont.render("Quit", True, color)
 reset = retryFont.render("Reset", True, color)
@@ -216,6 +219,8 @@ computer_label= winnerfont.render("AI", True, color)
 stone_go_next = which_go_next.render("Player's turn", True, color)
 wood_go_next = which_go_next.render("AI's turn", True, color)
 now_move = move.render("Start moving around", True, color)
+tileisoccupied = which_go_next.render("Tile is Occupied", True, color)
+selectStone = wrongpiecefont.render("Select a Stone piece.", True, color)
 
 
 #player's Score
@@ -373,6 +378,8 @@ def intermediateboard(winner_is_decided):
                                         tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
                                     # Give message if player tries clicking on a wood-occupied tile while trying to move
                                     elif tileGrid[i].getWhatPlayer() == 2 and highlight is True:
+                                        pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
+                                        screen.blit(tileisoccupied, (width / 2 - 145, 700))
                                         print("Tile is occupied, please select a different tile to move to")
                                     # Give message if player tries clicking a wood icon during stone's turn
                                     else:
@@ -414,6 +421,8 @@ def intermediateboard(winner_is_decided):
                             # Give message if player tries placing wood/stone icon in an occupied tile
                             # Only prints during placement of initial 6 icons
                             else:
+                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
+                                screen.blit(tileisoccupied, (width / 2 - 145, 700))
                                 print("Tile is occupied, please select a different tile")
         if playerTurn % 2 == 1 and winner_is_decided is False:
             if playerTurn < 6:

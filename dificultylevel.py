@@ -141,7 +141,6 @@ def dificultymain():
             intermediateboard(False)
          #Advanced AI
         if about.draw_button():
-
             playerboard(False)
         #quit button
         if quit.draw_button():

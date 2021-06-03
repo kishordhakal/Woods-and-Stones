@@ -195,6 +195,7 @@ retryFont = pygame.font.SysFont("corbel", 55)
 which_go_next = pygame.font.SysFont("corbel", 50)
 winnerfont= pygame.font.SysFont("corbel", 30)
 move = pygame.font.SysFont("corbel", 30)
+wrongpiecefont = pygame.font.SysFont("corbel",40)
 # the words for the buttons
 quit = quitFont.render("Quit", True, color)
 reset = retryFont.render("Reset", True, color)
@@ -209,7 +210,8 @@ computer_label= winnerfont.render("AI ", True, color)
 stone_go_next = which_go_next.render("Player's turn", True, color)
 wood_go_next = which_go_next.render("Computer's turn", True, color)
 now_move = move.render("Start moving around", True, color)
-
+selectStone = wrongpiecefont.render("Select a Stone piece.", True, color)
+tileisoccupied = which_go_next.render("Tile is Occupied", True, color)
 #player's Score
 player_score= 0
 computer_score= 0
@@ -363,9 +365,14 @@ def begineerboard(winner_is_decided):
                                         tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
                                     # Give message if player tries clicking on a wood-occupied tile while trying to move
                                     elif tileGrid[i].getWhatPlayer() == 2 and highlight is True:
+                                        # displays to the user that space is currently occupied
+                                        pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
+                                        screen.blit(tileisoccupied, (width / 2 - 145, 700))
                                         print("Tile is occupied, please select a different tile to move to")
                                     # Give message if player tries clicking a wood icon during stone's turn
                                     else:
+                                        pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
+                                        screen.blit(selectStone, (width / 2 - 145, 700))
                                         print("It is stone's turn, please select a stone icon")
                                 # Check if:
                                 # Tile clicked does not have a wood/stone icon
@@ -404,6 +411,8 @@ def begineerboard(winner_is_decided):
                             # Give message if player tries placing wood/stone icon in an occupied tile
                             # Only prints during placement of initial 6 icons
                             else:
+                                pygame.draw.rect(screen, p_color, [width / 2 - 150, 700, 330, 60])
+                                screen.blit(tileisoccupied, (width / 2 - 145, 700))
                                 print("Tile is occupied, please select a different tile")
         if playerTurn % 2 == 1 and winner_is_decided is False:
             if playerTurn < 6:
