@@ -75,6 +75,8 @@ class Bot:
                         break
             # Increment array index tracker
             i += 1
+            if i > 8:
+                i = 0
 
 # Tile class that drives wood/stone icon placement and tile detection
 class Tile:

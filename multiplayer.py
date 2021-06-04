@@ -48,21 +48,21 @@ stone=pygame.image.load("stone.png")
 player = ['Player1', 'Player2']
 x= sample(player,1)
 if x[0]=="Player1":
-        print("player 1 is Stone")
+        print("Player 1 is Stone")
         playerturn="Player 1 is Stone"
-        playerturn2= "Player 2 is Woods"
+        playerturn2= "Player 2 is Wood"
         label1 = font2.render(playerturn, True, (255, 255, 255))
         label2 = font2.render(playerturn2, True, (255, 255, 255))
         
 else:
-        print("player  2 is stone")
-        playerturn="Player 1 is Woods"
+        print("Player 2 is stone")
+        playerturn="Player 1 is Wood"
         playerturn2= "Player 2 is Stone"
         label1 = font2.render(playerturn2, True, (255, 255, 255))
         label2 = font2.render(playerturn, True, (255, 255, 255))
 
 #lABELS
-label3 = font3.render("Stone always go first", True, (255, 255, 255))
+label3 = font3.render("Stone always goes first", True, (255, 255, 255))
 
 
 

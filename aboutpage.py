@@ -35,7 +35,7 @@ def aboutPage():
     pygame.freetype.init()
 
     # font for header
-    #font_header = pygame.freetype.Font('/Users/sawamurahinako/Library/Fonts/meiryob.ttc', 80)
+    # font_header = pygame.freetype.Font('/Users/sawamurahinako/Library/Fonts/meiryob.ttc', 80)
     font_header = pygame.freetype.Font('C:\Windows\Fonts\FORTE.TTF', 80)
 
     # font for text
@@ -48,21 +48,21 @@ def aboutPage():
 
     text2 = font1.render("Play occurs on a 3 by 3 grid of 9 empty squares. ", True, (255, 255, 255))
 
-    text3 = font1.render("Two players alternate placing their items alternately. ", True, (255, 255, 255))
+    text3 = font1.render("Two players alternate placing their items. ", True, (255, 255, 255))
 
     text4 = font1.render("Stone has to be placed first every time. ", True, (255, 255, 255))
 
-    text5 = font1.render("One player place stone, the other wood. ", True, (255, 255, 255))
+    text5 = font1.render("One player places stone, the other wood. ", True, (255, 255, 255))
 
-    text6 = font1.render("Repeat this three times.If one player places ", True, (255, 255, 255))
+    text6 = font1.render("Repeat this three times. If one player places ", True, (255, 255, 255))
 
-    text7 = font1.render("three of the same items in a line , that player wins.", True, (255, 255, 255))
+    text7 = font1.render("three of the same item in a line, that player wins.", True, (255, 255, 255))
 
-    text8 = font1.render("If there is no winner, players can move their", True, (255, 255, 255))
+    text8 = font1.render("If there is no winner, players can take turns ", True, (255, 255, 255))
 
-    text9 = font1.render("stones or woods to the adjacent empty squares", True, (255, 255, 255))
+    text9 = font1.render("moving their stones or woods to adjacent ", True, (255, 255, 255))
 
-    text10 = font1.render("alternately until the winner is decided.", True, (255, 255, 255))
+    text10 = font1.render("empty squares until the winner is decided.", True, (255, 255, 255))
 
     # button
     text_back_button = font2.render("Back", True, (255, 255, 255))
@@ -112,9 +112,9 @@ def aboutPage():
 
         screen.blit(text7, (30, 360))
 
-        screen.blit(text８, (30, 450))
+        screen.blit(text8, (30, 450))
 
-        screen.blit(text９, (30, 490))
+        screen.blit(text9, (30, 490))
 
         screen.blit(text10, (30, 530))
 

@@ -1,60 +1,49 @@
-import pygame, sys
-from pygame import mixer
-import pygame.freetype
-from pygame.locals import*
-from aboutpage import *
-from board import *
-from dificultylevel import dificultymain
-from multiplayer_select import multi_select
+from mboard import *
+from mboard_p2p import *
 from multiplayer import *
 
-#initialize the pygame
+# Initialize pygame
 pygame.init()
 
+# Setting window dimensions
+WIDTH = 800
+HEIGHT = 800
 
-#SETTING UP HEIGHT AND WIDTH
-WIDTH= 800
-HEIGHT= 800
-
-#colors
-ORANGE=(191,138, 23)
-black= (0,0,0)
-white= (255,255,255)
-red= (255,0,0)
+# Setting window colors
+ORANGE = (191, 138, 23)
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
 screen_width = 800
 screen_height = 800
-#initializing clicked
+
+# Initializing clicked
 clicked = False
-#font
+
+# Setting font
 font = pygame.freetype.Font('C:\Windows\Fonts\FORTE.TTF', 80)
 font1 = pygame.font.SysFont('Constantia', 30)
 
-textX=10
-textY =10
+textX = 10
+textY = 10
 
+# Create screen object
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-
-#screen
-screen = pygame.display.set_mode((WIDTH,HEIGHT))
-#title and icon
-
+# Title and icon
 pygame.display.set_caption("Woods and Stones")
-icon = pygame.image.load('gameico.ico')
+icon = pygame.image.load("gameico.ico")
 pygame.display.set_icon(icon)
 
+# Background image
+background = pygame.image.load('bgpic.png')
 
+# Background music, volume, and looping
+pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.load("bgsound.mp3")
+pygame.mixer.music.play(-1)
 
-
-#background Image
-background=pygame.image.load('bgpic.png')
-
-#background music
-pygame.mixer.music.set_volume(0.1) #setting up the volume
-mixer.music.load('bgsound.mp3')
-mixer.music.play(-1) #enabeling looping
-
-
-#Buttons
+# Creating menu buttons
 class button():
     button_col = (0, 150, 0)
     hover_col = (75, 200, 200)
@@ -62,14 +51,13 @@ class button():
     text_col = black
     width = 300
     height = 80
-    #init function to assign values to the object properties
+    # Init function to assign values to the object properties
     def __init__(self, x, y, text):
         self.x = x
         self.y = y
         self.text = text
 
     def draw_button(self):
-
         global clicked
         action = False
 
@@ -77,7 +65,7 @@ class button():
         pos = pygame.mouse.get_pos()
 
         # create pygame Rect object for the button
-        button_rect = Rect(self.x, self.y, self.width, self.height)
+        button_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         # check mouseover and clicked conditions
         if button_rect.collidepoint(pos):
@@ -104,56 +92,44 @@ class button():
         screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 25))
         return action
 
-single= button(200, 200, 'Single Player')
-multi = button(200, 350, 'Multi-Player')
-about = button(200, 500, 'About')
+local = button(200, 350, 'Local')
+p2p = button(200, 500, 'Peer to Peer')
+back = button(0, 80, 'Main menu')
 quit = button(200, 650, 'Quit')
 
-
-
-
-    #font for the button
+# Font for the button
 smallfont = pygame.font.SysFont('Corbel', 35)
-    #render text in that
-
-
-
-
-
-
 
 #MAIN LOOP
 #function to avoid the circular import
-def main_menu():
+def multi_select():
  while True:
 
         #background image
         screen.blit(background,(0,0))
 
         for event in pygame.event.get():
+            #pressed quit button
          if event.type == pygame.QUIT:
                 sys.exit()
-        if single.draw_button():
-            print('Single Player')
-            #playerboard(False)
-            import dificultylevel
-            dificultymain()
-        if multi.draw_button():
-            print('Multi Player')
-            multi_select()
-        if about.draw_button():
-            print('About')
-            aboutPage()
-
+            #pressed begineer
+        if back.draw_button():
+            import frontpage
+            frontpage.main_menu()
+        if local.draw_button():
+            multiplayer()
+            #pressed intermediate
+        if p2p.draw_button():
+            import mboard_p2p
+            mboard_p2p.playerboard(False)
+        #quit button
         if quit.draw_button():
             print('quit')
             sys.exit()
 
-
-
-
-
         pygame.draw.rect(screen, ORANGE, (0, 0, 800, 80))
         font.render_to(screen, (40, 10), 'WOODS and STONES', (255, 255, 255, 250))
         pygame.display.update()
-main_menu()
+
+if __name__ == '__main__':
+    menu()

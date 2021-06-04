@@ -1,90 +1,5 @@
 import sys, pygame
-import random
 pygame.init()
-
-class Bot:
-    # "iconInput" is a wood/stone icon
-    # "playerInput" is the player number that goes with an icon (stone = 1, wood = 2)
-    def __init__(self, iconInput, playerInput):
-        self.icon = iconInput
-        self.whatplayer = playerInput
-        self.unmoved = True
-
-    # Basic method that places a wood/stone icon in the next available board tile
-    # Detection starts from the top left and checks right until it hits bottom right
-    def placenext(self):
-
-
-        for i in range(0, 8):
-            # generating random i values to place the icon
-            i = random.randint(0, 8)
-            # Check for an empty tile at tileGrid[i]
-            if tileGrid[i].isoccupied() is None:
-                # Make computer wait so it doesn't instantly place an icon after a player does
-                pygame.time.wait(500)
-                # Highlight which tile computer is moving to
-                selecttile(tileGrid[i], self.icon)
-                # Wait for 1 second so player can visually process where computer is moving
-                pygame.time.wait(1000)
-                # Un-highlight tile and keeps computer's icon in board tile
-                deselecttile(tileGrid[i], self.icon)
-                # drawiconrect() fills the empty board tile with a wood/stone detector, it can no longer be clicked on
-                tileGrid[i].drawiconrect()
-                # Set the player detection to the bot's player number to check for three in a row
-                tileGrid[i].setWhatPlayer(self.whatplayer)
-                # Break out of loop so the computer doesn't fill the entire board
-                break
-
-    # Basic method that moves the first detected wood/stone icon to the first open available board tile
-    # Detection starts from the top left and checks right until it hits bottom right
-    def movenext(self):
-        # Array index used instead of an outer for loop, tracks which tileGrid index the computer is moving from
-        i = 0
-        # Reset self.unmoved from last time movenext() was called
-        self.unmoved = True
-        # Make computer wait so it doesn't instantly place an icon after a player does
-        pygame.time.wait(500)
-        while self.unmoved:
-            # First loop looks for the first available tile owned by the computer
-            if tileGrid[i].isoccupied() is not None and tileGrid[i].getWhatPlayer() == self.whatplayer:
-                j = random.randint(0, 8)
-                for j in range(0, 8):
-                    #crating random values for j between 0 to 8
-
-                    # Second loop compares the first available tile to all empty tiles and checks for adjacency
-                    # It's impossible for all icons to have no adjacent moves available; no else statement is needed
-
-                    if tileGrid[j].isoccupied() is None and checkmove(j, i):
-                        # Highlight which tile computer is moving from
-                        selecttile(tileGrid[i], self.icon)
-                        # Wait for .5 seconds so player can visually process where computer is moving from
-                        pygame.time.wait(500)
-                        # Un-highlight the tile with no waiting time
-                        deselecttile(tileGrid[i], self.icon)
-                        # Erase the tile the computer is moving from
-                        screen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
-                        # Highlight which tile the computer is moving to
-                        selecttile(tileGrid[j], self.icon)
-                        # Wait for 1 second so player can visually process where computer is moving to
-                        pygame.time.wait(1000)
-                        # Un-highlight tile and keeps computer's icon in board tile
-                        deselecttile(tileGrid[j], self.icon)
-                        # Erase previous tile's wood/stone icon detector
-                        tileGrid[i].eraseiconrect()
-                        # Erase previous tile's player data
-                        tileGrid[i].setWhatPlayer(0)
-                        # Fill new tile with wood/stone icon detector
-                        tileGrid[j].drawiconrect()
-                        # Fill new tile with computer player data
-                        tileGrid[j].setWhatPlayer(self.whatplayer)
-                        # Set unmoved to False to break out of while loop
-                        self.unmoved = False
-                        # Break out of the for loop so the computer doesn't move its pieces multiple times
-                        break
-            # Increment array index tracker
-            i += 1
-            if i > 8:
-                i = 0
 
 # Tile class that drives wood/stone icon placement and tile detection
 class Tile:
@@ -179,10 +94,6 @@ tileGrid = [Tile(tilepicture, 150, 150, 0), Tile(tilepicture, 325, 150, 0), Tile
             Tile(tilepicture, 150, 325, 0), Tile(tilepicture, 325, 325, 0), Tile(tilepicture, 500, 325, 0), # MIDDLE ROW
             Tile(tilepicture, 150, 500, 0), Tile(tilepicture, 325, 500, 0), Tile(tilepicture, 500, 500, 0)] # BOTTOM ROW
 
-# Create a bot to play against
-# Pass it the tileGrid for reference, a wood icon, and the player number for wood
-comp = Bot(wood, 2)
-
 # Create sound file objects for placing wood/stone icons, highlighting tiles, and victory announcement
 stonesound = pygame.mixer.Sound("stonesound.mp3")
 woodsound = pygame.mixer.Sound("woodsound.mp3")
@@ -212,26 +123,27 @@ reset = retryFont.render("Reset", True, color)
 menu = quitFont.render("Menu", True, color)
 
 #the Labels for score
-player_label= winnerfont.render("Player", True, color)
-computer_label= winnerfont.render("AI", True, color)
+stone_label= winnerfont.render("Stone", True, color)
+woods_label= winnerfont.render("Wood", True, color)
 
 # Player's turn placement
-stone_go_next = which_go_next.render("Player's turn", True, color)
-wood_go_next = which_go_next.render("AI's turn", True, color)
+stone_go_next = which_go_next.render("Stone's turn", True, color)
+wood_go_next = which_go_next.render("Wood's turn", True, color)
 now_move = move.render("Start moving around", True, color)
-tileisoccupied = which_go_next.render("Tile is Occupied", True, color)
-selectStone = wrongpiecefont.render("Select a Stone piece.", True, color)
+
+tileisoccupied = which_go_next.render("Tile is occupied", True, color)
+selectStone = wrongpiecefont.render("Select a Stone piece", True, color)
+selectWood = wrongpiecefont.render("Select a Wood piece", True, color)
 moveadj= move.render("Move to highlighted tile ", True, color)
 empty = move.render("Tile is empty ", True, color)
 game= move.render("GAME OVER !! ", True, color)
 
 #player's Score
-player_score= 0
-computer_score= 0
-
+stone_score= 0
+wood_score= 0
 
 # Define method that creates player checkerboard and the screen it opens in
-def intermediateboard(winner_is_decided):
+def playerboard(winner_is_decided):
     # Reference for if a tile has been selected by player
     highlight = False
     # Temp reference for when moving wood/stone icons
@@ -261,8 +173,8 @@ def intermediateboard(winner_is_decided):
                         tileGrid[i].eraseiconrect()
                         tileGrid[i].setWhatPlayer(0)
 
-                    import dificultylevel
-                    dificultylevel.dificultymain()
+                    import frontpage
+                    frontpage.main_menu()
                 #checks the location of the mouse click
                 #mouse click for quit button then exits
                 if width-200 <= mouse[0] <= width-80 and height-750 <= mouse[1] <= height-700:
@@ -281,9 +193,7 @@ def intermediateboard(winner_is_decided):
                     winner_is_decided = False
 
             if winner_is_decided == False:
-                # Check for AI turn before checking for player input
-                # This block comes first or the game will wait on player mouse clicks to move on the computer's turn
-
+                # Check for mouse button release
                 if event.type == pygame.MOUSEBUTTONUP:
                     # For loop that goes through tileGrid array full of game board tile detector rectangles
                     for i in range(0, 9):
@@ -295,29 +205,55 @@ def intermediateboard(winner_is_decided):
                             # If no detector (is None), tile has no wood/stone icon and can be clicked on
                             # Otherwise, tile has an icon in it and can't be clicked on anymore
                             if tileGrid[i].isoccupied() is None and playerTurn < 6:
-                                # get_surface() takes a copy image of the current board
-                                # blit() draws it on a currently undisplayed frame
-                                screen.blit(pygame.display.get_surface(), (0, 0))
-                                # Draw the stone picture over top of board copied above and centers image in a tile
-                                screen.blit(stone, (tileGrid[i].getxcoord() + 37, tileGrid[i].getycoord() + 37))
-                                # Take undisplayed frame that's been drawn on and display it
-                                pygame.display.flip()
-                                # Play stone placement sound
-                                stonesound.play()
-                                # drawiconrect() fills the empty board tile with a wood/stone detector rectangle
-                                # So now it can no longer be clicked on
-                                tileGrid[i].drawiconrect()
-                                # set the player detection for player 1 to check for three in a row
-                                tileGrid[i].setWhatPlayer(1)
-                                # Increment player turn by 1 post-click
-                                playerTurn += 1
-                                # checks if anyone has a three in a row yet
-                                winner_is_decided = getWinner(winner_is_decided)
+                                # Modulus statement that flips between wood and stone picture placements
+                                if playerTurn % 2 == 0:
+                                    # get_surface() takes a copy image of the current board
+                                    # blit() draws it on a currently undisplayed frame
+                                    screen.blit(pygame.display.get_surface(), (0, 0))
+                                    # Draw the stone picture over top of board copied above and centers image in a tile
+                                    screen.blit(stone, (tileGrid[i].getxcoord() + 37, tileGrid[i].getycoord() + 37))
+                                    # Take undisplayed frame that's been drawn on and display it
+                                    pygame.display.flip()
+                                    # Play stone placement sound
+                                    stonesound.play()
+                                    # drawiconrect() fills the empty board tile with a wood/stone detector rectangle
+                                    # So now it can no longer be clicked on
+                                    tileGrid[i].drawiconrect()
+                                    # set the player detection for player 1 to check for three in a row
+                                    tileGrid[i].setWhatPlayer(1)
+                                    # Increment player turn by 1 post-click
+                                    playerTurn += 1
+                                    # checks if anyone has a three in a row yet
+                                    winner_is_decided = getWinner(winner_is_decided)
 
-                                # Display player turn at the top of the game board
-                                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
-                                screen.blit(wood_go_next, (300, 700))
-                            # All pieces have been placed and it's now time to move them if no winner was found
+                                    # Display player turn at the buttom of the game board
+                                    pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                    screen.blit(wood_go_next, (300, 700))
+                                else: # playerTurn % 2 == 1:
+                                    # get_surface() takes a copy image of the current board
+                                    # blit() draws it on a currently undisplayed frame
+                                    screen.blit(pygame.display.get_surface(), (0, 0))
+                                    # Draw the wood picture over top of board copied above and centers image in a tile
+                                    screen.blit(wood, (tileGrid[i].getxcoord() + 37, tileGrid[i].getycoord() + 37))
+                                    # Take undisplayed frame that's been drawn on and display it
+                                    pygame.display.flip()
+                                    # Play wood placement sound
+                                    woodsound.play()
+                                    # drawiconrect() fills the empty board tile with a wood/stone detector rectangle
+                                    # So now it can no longer be clicked on
+                                    tileGrid[i].drawiconrect()
+                                    # set the player detection for player 2 to check for three in a row
+                                    tileGrid[i].setWhatPlayer(2)
+                                    # Increment player turn by 1 post-click
+                                    playerTurn += 1
+                                    # checks if anyone has a three in a row yet
+                                    winner_is_decided = getWinner(winner_is_decided)
+
+                                    # Display player turn at the butttom of the game board
+                                    pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                    screen.blit(stone_go_next, (300, 700))
+
+                        # All pieces have been placed and it's now time to move them if no winner was found
                             elif playerTurn > 5:
                                 pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
                                 screen.blit(now_move, (300, 700))
@@ -325,6 +261,7 @@ def intermediateboard(winner_is_decided):
                                 # Check if:
                                 # Tile clicked has a wood/stone icon
                                 # It's stone's turn
+
                                 if tileGrid[i].isoccupied() is not None and playerTurn % 2 == 0:
                                     # Check if:
                                     # The icon clicked belongs to stone, not wood
@@ -392,6 +329,7 @@ def intermediateboard(winner_is_decided):
                                 # Tile clicked does not have a wood/stone icon
                                 # There's a tile currently highlighted
                                 # It's stone's turn
+
                                 elif tileGrid[i].isoccupied() is None and highlight is True and playerTurn % 2 == 0:
                                     if checkmove(i, tempIndex):
                                         # Take copy of previous game board with empty tile and get ready to draw on it
@@ -421,6 +359,109 @@ def intermediateboard(winner_is_decided):
                                         pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
                                         screen.blit(moveadj, (300, 700))
                                         print("Please move to an adjacent tile")
+                                # ***** WOOD'S TURN *****
+                                # Check if:
+                                # Tile clicked has a wood/stone icon
+                                # If there's nothing already currently highlighted
+                                # If it's wood's turn
+                                elif tileGrid[i].isoccupied() is not None and playerTurn % 2 == 1:
+                                    # Check if:
+                                    # The icon clicked belongs to wood, not stone
+                                    # There's nothing currently highlighted
+
+                                    if tileGrid[i].getWhatPlayer() == 2 and highlight is False:
+                                        # Create a copy of the board and all wood/stone icons
+                                        tempScreen = screen.copy()
+                                        # Place an empty tile where player clicked, but only in the COPY of the board
+                                        tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
+                                        # Highlight the tile that was clicked
+                                        selecttile(tileGrid[i], wood)
+                                        # Highlight where player can move to
+                                        premove(i)
+                                        # Play click sound
+                                        clicksoundhi.play()
+                                        # Store current tileGrid index for clearing player data on next loop iteration
+                                        tempIndex = i
+                                        # A tile is now highlighted, set highlight to True for if statement control
+                                        highlight = True
+                                    # Check if:
+                                    # The icon clicked belongs to wood, not stone
+                                    # There's a tile currently highlighted
+                                    # The tile clicked is the same one that's highlighted
+                                    elif tileGrid[i].getWhatPlayer() == 2 and highlight is True and i == tempIndex:
+                                        # Un-highlight the tile that was clicked
+                                        deselecttile(tileGrid[i], wood)
+                                        # Erase previous tiles player could potentially move to
+                                        postmove(tempIndex)
+                                        # Play click sound
+                                        clicksoundlo.play()
+                                        # A tile is no longer highlighted, set highlight to False for if statement control
+                                        highlight = False
+                                    # Check if:
+                                    # The icon clicked belongs to wood, not stone
+                                    # There's a tile currently highlighted
+                                    # The above elif was passed, meaning the tile clicked isn't the one highlighted
+                                    elif tileGrid[i].getWhatPlayer() == 2 and highlight is True:
+                                        # Un-highlight the previous tile
+                                        deselecttile(tileGrid[tempIndex], wood)
+                                        # Highlight the new tile that was clicked
+                                        selecttile(tileGrid[i], wood)
+                                        # Erase previous tiles player could potentially move to
+                                        postmove(tempIndex)
+                                        # Play click sound
+                                        clicksoundhi.play()
+                                        # Store current tileGrid index for clearing player data on next loop iteration
+                                        tempIndex = i
+                                        # Create a copy of the board and all wood/stone icons
+                                        tempScreen = screen.copy()
+                                        # Highlight where player can move to
+                                        premove(i)
+                                        # Place an empty tile where player clicked, but only in the COPY of the board
+                                        tempScreen.blit(tilepicture, (tileGrid[i].getxcoord(), tileGrid[i].getycoord()))
+                                    # Give message if player tries clicking on a stone-occupied tile while trying to move
+                                    elif tileGrid[i].getWhatPlayer() == 1 and highlight is True:
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(tileisoccupied, (300, 700))
+                                        print("Tile is occupied, please select a different tile to move to")
+                                    # Give message if player tries clicking a stone icon during wood's turn
+                                    else:
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(selectWood, (300, 700))
+                                        print("It is wood's turn, please select a wood icon")
+                                        pygame.display.update()
+                                # Check if:
+                                # Tile clicked does not have a wood/stone icon
+                                # If there's a tile currently highlighted
+                                # If it's wood's turn
+                                elif tileGrid[i].isoccupied() is None and highlight is True and playerTurn % 2 == 1:
+                                    if checkmove(i, tempIndex):
+                                        # Take copy of previous game board with empty tile and get ready to draw on it
+                                        screen.blit(tempScreen, (0, 0))
+                                        # Place a wood icon in empty tile where player clicked
+                                        screen.blit(wood, (tileGrid[i].getxcoord() + 37, tileGrid[i].getycoord() + 37))
+                                        # Fill tile with detector rectangle
+                                        tileGrid[i].drawiconrect()
+                                        # Fill tile with player data
+                                        tileGrid[i].setWhatPlayer(2)
+                                        # Clear highlighted tile of wood/stone icon detector so it can be clicked again later
+                                        tileGrid[tempIndex].eraseiconrect()
+                                        # Clear highlighted tile of player data
+                                        tileGrid[tempIndex].setWhatPlayer(0)
+                                        # Update game board with wood icon
+                                        pygame.display.flip()
+                                        # Play wood placement sound
+                                        woodsound.play()
+                                        # Increase playerTurn so stone will play next turn
+                                        playerTurn += 1
+                                        # Wood icon has been moved and no longer highlighted
+                                        # Set highlight to False for if statement control
+                                        highlight = False
+                                        # An icon was moved, check for any new winners
+                                        getWinner(winner_is_decided)
+                                    else:
+                                        pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                                        screen.blit(moveadj, (300, 700))
+                                        print("Please move to an adjacent tile")
                                 # Give message if player tries clicking on an empty tile while it is their turn to move
                                 else:
                                     pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
@@ -432,31 +473,11 @@ def intermediateboard(winner_is_decided):
                                 pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
                                 screen.blit(tileisoccupied, (300, 700))
                                 print("Tile is occupied, please select a different tile")
-        if playerTurn % 2 == 1 and winner_is_decided is False:
-            if playerTurn < 6:
-                comp.placenext()
-                # Play wood placement sound
-                woodsound.play()
-                # Increment player turn by 1 post-click
-                playerTurn += 1
-                # checks if anyone has a three in a row yet
-                winner_is_decided = getWinner(winner_is_decided)
-            else:  # playerTurn > 6:
-                comp.movenext()
-                # Play wood placement sound
-                woodsound.play()
-                # Increment player turn by 1 post-click
-                playerTurn += 1
-                # checks if anyone has a three in a row yet
-                winner_is_decided = getWinner(winner_is_decided)
 
-            # Display player turn at the top of the game board
-
-        #display game over at the buttom of the page
+        # display game over at the buttom of the page
         if winner_is_decided is True:
-            pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
-            screen.blit(game, (300, 700))
-        # Check for mouse button release
+                pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
+                screen.blit(game, (300, 700))
         # gets the xy coordinates of the mouse
         mouse = pygame.mouse.get_pos()
         # creates the mouse hover over effect
@@ -476,16 +497,13 @@ def intermediateboard(winner_is_decided):
             pygame.draw.rect(screen, color_light, [width - 450, height - 750, 140, 55])
         else:
             pygame.draw.rect(screen, color_dark, [width - 450, height - 750, 140, 55])
-
-        #dispaly Socres
-        screen.blit(player_label, (width - 780, height - 650))
-        screen.blit(computer_label, (width - 100, height - 650))
-        stone_wins = player_score
-        wood_wins = computer_score
+        #score display
+        stone_wins = stone_score
+        wood_wins = wood_score
         font1 = pygame.font.SysFont("comicsansms", 30)
-        score_label = font1.render(str(player_score), True, (255, 255, 255))
+        score_label = font1.render(str(stone_score), True, (255, 255, 255))
         screen.blit(score_label, (55, 175))
-        score_label1 = font1.render(str(computer_score), True, (255, 255, 255))
+        score_label1 = font1.render(str(wood_score), True, (255, 255, 255))
         screen.blit(score_label1, (730, 175))
 
         # RESET BUTTON
@@ -510,7 +528,11 @@ def intermediateboard(winner_is_decided):
         screen.blit(reset, (width - 700, height - 750))
         screen.blit(menu, (width - 450, height - 750))
         screen.blit(quit, (width - 200, height - 750))
+        screen.blit(stone_label, (width - 780, height - 650))
+        screen.blit(woods_label, (width - 100, height - 650))
 
+
+        # update the display
         pygame.display.update()
 
 # Method that highlights a tile clicked by a player
@@ -699,24 +721,23 @@ def checkmove(currentIndex, prevIndex):
     else:
         return False
 
-
 def winner(win):
     screen.fill(background)
     # Set size of the user screen
     size = width, height = 800, 800
     font1 = pygame.font.SysFont("comicsansms", 65)
-    player_win=0
-    computer_win=0
+    stone_win=0
+    wood_win=0
     if win == 1:
-        playerwon = "Player won the game"
-        player_win =+1
-        global player_score
-        player_score+= player_win
+        playerwon = "Stones wins the game"
+        stone_win =+1
+        global stone_score
+        stone_score+= stone_win
     else:
-        playerwon = "Computer wins the game"
-        computer_win=+1
-        global computer_score
-        computer_score+= computer_win
+        playerwon = "Woods wins the game"
+        wood_win=+1
+        global wood_score
+        wood_score+= wood_win
 
     winnerlabel = font1.render(playerwon, True, (255, 255, 255))
     screen.blit(winnerlabel, (100, 200))
@@ -769,9 +790,9 @@ def draw():
     pygame.draw.line(screen, (203, 174, 12), (525, 275), (450, 350), 30)
     pygame.draw.line(screen, (203, 174, 12), (350, 450), (275, 525), 30)
 
-    # Display player turn at the top of the game board
+    # Display player turn at the buttom of the game board
     pygame.draw.rect(screen, p_color, [0, 700, 800, 60])
-    screen.blit(stone_go_next, (300, 700))
+    screen.blit(stone_go_next, (300,700))
 
 # Method that checks each winning combination for both stone and wood
 def getWinner(winner_is_decided):
@@ -1048,4 +1069,4 @@ def getWinner(winner_is_decided):
 
 # Run playerboard method
 if __name__ == '__main__':
-    intermediateboard(winner_is_decided)
+    playerboard(winner_is_decided)

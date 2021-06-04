@@ -202,7 +202,7 @@ reset = retryFont.render("Reset", True, color)
 menu = quitFont.render("Menu", True, color)
 
 # the Labels for score
-stone_label = winnerfont.render("YOU", True, color)
+stone_label = winnerfont.render("Player", True, color)
 woods_label = winnerfont.render("AI", True, color)
 
 # Player's turn placement
