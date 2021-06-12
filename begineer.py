@@ -700,18 +700,21 @@ def winner(win):
     player_win=0
     computer_win=0
     if win == 1:
-        playerwon = "Player won the game"
+        playerwon = "YOU WON THE GAME"
         player_win =+1
         global player_score
         player_score+= player_win
     else:
-        playerwon = "Computer wins the game"
+        playerwon = "COMPUTER WON !!"
         computer_win=+1
         global computer_score
         computer_score+= computer_win
+    # winning image
+    winImg = pygame.image.load('winner.jpg')
+    screen.blit(winImg, (0, 0))
 
     winnerlabel = font1.render(playerwon, True, (255, 255, 255))
-    screen.blit(winnerlabel, (100, 200))
+    screen.blit(winnerlabel, (75, 500))
 
 
 # Method that draws the game board without any wood/stone icons

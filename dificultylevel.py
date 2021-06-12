@@ -3,9 +3,11 @@ from pygame import mixer
 import pygame.freetype
 from pygame.locals import*
 
-
+import aiboard
+import begineer
+import intermediate
 from aboutpage import *
-from board import *
+from aiboard import *
 from multiplayer import *
 from begineer import *
 from intermediate import *
@@ -118,6 +120,8 @@ quit = button(200, 650, 'Quit')
     #font for the button
 smallfont = pygame.font.SysFont('Corbel', 35)
 
+
+
 #MAIN LOOP
 #function to avoid the circular import
 def dificultymain():
@@ -125,6 +129,18 @@ def dificultymain():
 
         #background image
         screen.blit(background,(0,0))
+        # Global socre to fix the score bugs for begineer
+        begineer.player_score = 0
+        begineer.computer_score = 0
+        # GLOBAL SCORE to fix the socre bugs for intermedite
+        intermediate.player_score = 0
+        intermediate.computer_score = 0
+
+        #ai
+        aiboard.player_score= 0
+        aiboard.ai_score= 0
+
+
 
         for event in pygame.event.get():
             #pressed quit button

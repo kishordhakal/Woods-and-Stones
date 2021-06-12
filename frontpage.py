@@ -2,10 +2,14 @@ import pygame, sys
 from pygame import mixer
 import pygame.freetype
 from pygame.locals import*
+
+import aiboard
+import begineer
+import intermediate
 from aboutpage import *
-from board import *
+from aiboard import *
 from dificultylevel import dificultymain
-from multiplayer_select import multi_select
+
 from multiplayer import *
 
 #initialize the pygame
@@ -110,14 +114,13 @@ about = button(200, 500, 'About')
 quit = button(200, 650, 'Quit')
 
 
-
-
     #font for the button
 smallfont = pygame.font.SysFont('Corbel', 35)
     #render text in that
 
-
-
+#GLOBAL SCORE to fix the socre bugs for multiplayer
+mboard.stone_score= 0
+mboard.wood_score= 0
 
 
 
@@ -140,7 +143,7 @@ def main_menu():
             dificultymain()
         if multi.draw_button():
             print('Multi Player')
-            multi_select()
+            multiplayer()
         if about.draw_button():
             print('About')
             aboutPage()

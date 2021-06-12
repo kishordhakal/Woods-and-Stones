@@ -74,7 +74,7 @@ def playerMove_adjacent(before, after):
 
 
 def compMove():
-    bestScore = -800
+    bestScore = float('-inf') #updated -800
     bestMove = 0
     for key in board.keys():
         if (board[key] == ' '):
@@ -113,7 +113,7 @@ def compMove_adjacent():
                 possible.append([before, after])
                 count += 1
 
-    bestScore = -800
+    bestScore = float('-inf') # -800 updated
     bestMove = (0, 0)
 
     for i, (before, after) in enumerate(possible):
@@ -144,7 +144,7 @@ def minimax(board, depth, isMaximizing):
         return 0
 
     if (isMaximizing):
-        bestScore = -800
+        bestScore = float('-inf') # updated -800
         for key in board.keys():
             if (board[key] == ' '):
                 board[key] = bot
@@ -155,7 +155,7 @@ def minimax(board, depth, isMaximizing):
         return bestScore
 
     else:
-        bestScore = 800
+        bestScore = float('inf') #updated 800
         for key in board.keys():
             if (board[key] == ' '):
                 board[key] = player

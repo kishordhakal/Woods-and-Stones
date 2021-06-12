@@ -1,4 +1,5 @@
 import sys, pygame
+from moviepy.editor import *
 pygame.init()
 
 # Tile class that drives wood/stone icon placement and tile detection
@@ -722,25 +723,33 @@ def checkmove(currentIndex, prevIndex):
         return False
 
 def winner(win):
+
     screen.fill(background)
     # Set size of the user screen
     size = width, height = 800, 800
-    font1 = pygame.font.SysFont("comicsansms", 65)
+    font1 = pygame.font.SysFont("comicsansms", 55)
     stone_win=0
     wood_win=0
     if win == 1:
-        playerwon = "Stones wins the game"
+        playerwon = "STONE WON THE GAME"
         stone_win =+1
         global stone_score
         stone_score+= stone_win
     else:
-        playerwon = "Woods wins the game"
+        playerwon = "WOOD WON THE GAME"
         wood_win=+1
         global wood_score
         wood_score+= wood_win
+    #winning image
+    winImg = pygame.image.load('winner.jpg')
+    screen.blit(winImg, (0, 0))
 
     winnerlabel = font1.render(playerwon, True, (255, 255, 255))
-    screen.blit(winnerlabel, (100, 200))
+    screen.blit(winnerlabel, (100, 500))
+
+    pygame.display.flip()
+
+
 
 # Method that draws the game board without any wood/stone icons
 def draw():

@@ -216,8 +216,8 @@ empty = move.render("Tile is empty ", True, color)
 game= move.render("GAME OVER !! ", True, color)
 
 # player's Score
-stone_score = 0
-wood_score = 0
+player_score = 0
+ai_score = 0
 # Create a bot to play against and pass it a wood icon and the player number for wood
 comp = Bot(wood, 2)
 
@@ -487,12 +487,12 @@ def playerboard(winner_is_decided):
             pygame.draw.rect(screen, color_dark, [width - 450, height - 750, 140, 55])
 
         #display scores
-        stone_wins = stone_score
-        wood_wins = wood_score
+        stone_wins = player_score
+        wood_wins = ai_score
         font1 = pygame.font.SysFont("comicsansms", 30)
-        score_label = font1.render(str(stone_score), True, (255, 255, 255))
+        score_label = font1.render(str(player_score), True, (255, 255, 255))
         screen.blit(score_label, (55, 175))
-        score_label1 = font1.render(str(wood_score), True, (255, 255, 255))
+        score_label1 = font1.render(str(ai_score), True, (255, 255, 255))
         screen.blit(score_label1, (730, 175))
 
         # RESET BUTTON
@@ -721,18 +721,22 @@ def winner(win):
     stone_win = 0
     wood_win = 0
     if win == 1:
-        playerwon = "You won the game"
+        playerwon = "YOU WON THE GAME"
         stone_win = +1
-        global stone_score
-        stone_score += stone_win
+        global player_score
+        player_score += stone_win
     else:
-        playerwon = "AI won the game"
+        playerwon = "COMPUTER WON !!"
         wood_win = +1
-        global wood_score
-        wood_score += wood_win
+        global ai_score
+        ai_score += wood_win
+
+    # winning image
+    winImg = pygame.image.load('winner.jpg')
+    screen.blit(winImg, (0, 0))
 
     winnerlabel = font1.render(playerwon, True, (255, 255, 255))
-    screen.blit(winnerlabel, (100, 200))
+    screen.blit(winnerlabel, (75, 500))
 
 
 # Method that draws the game board without any wood/stone icons
