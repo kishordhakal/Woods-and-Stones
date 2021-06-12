@@ -1,7 +1,5 @@
 import pygame
-import numpy
 import sys
-from pygame import locals
 import mboard
 
 

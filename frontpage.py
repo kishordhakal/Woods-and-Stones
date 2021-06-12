@@ -30,7 +30,7 @@ screen_height = 800
 #initializing clicked
 clicked = False
 #font
-font = pygame.freetype.Font('C:\Windows\Fonts\FORTE.TTF', 80)
+font = pygame.freetype.Font('FORTE.TTF', 80)
 font1 = pygame.font.SysFont('Constantia', 30)
 
 textX=10

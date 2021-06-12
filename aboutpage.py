@@ -35,8 +35,7 @@ def aboutPage():
     pygame.freetype.init()
 
     # font for header
-    # font_header = pygame.freetype.Font('/Users/sawamurahinako/Library/Fonts/meiryob.ttc', 80)
-    font_header = pygame.freetype.Font('C:\Windows\Fonts\FORTE.TTF', 80)
+    font_header = pygame.freetype.Font('FORTE.TTF', 80)
 
     # font for text
     font1 = pygame.font.SysFont("comicsansms", 30)
